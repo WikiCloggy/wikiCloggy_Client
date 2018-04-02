@@ -2,10 +2,13 @@ package gg.soc.wikicloggy;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.TextureView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -17,6 +20,14 @@ import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.LogoutResponseCallback;
 
 public class CameraActivity extends Activity {
+    private TextureView mCameraTextureView;
+    private CameraAPI mPreview;
+
+    Activity cameraActivity = this;
+
+    private static final String TAG = "CAMERAACTIVITY";
+
+    static final int REQUEST_CAMERA = 1;
 
     ListView listView = null;
     @Override
@@ -30,7 +41,39 @@ public class CameraActivity extends Activity {
         setCustomActionbar();
         setNavigationbar();
 
+        mCameraTextureView = (TextureView) findViewById(R.id.cameraTextureView);
+        mPreview = new CameraAPI(this, mCameraTextureView);
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mPreview.onResume();
+    }
+    @Override
+    protected  void onPause() {
+        super.onPause();
+        mPreview.onPause();
+    }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch(requestCode) {
+            case REQUEST_CAMERA:
+                for(int i=0; i<permissions.length; i++) {
+                    String permission = permissions[i];
+                    int grantResult = grantResults[i];
+                    if(grantResult == PackageManager.PERMISSION_GRANTED) {
+                        mCameraTextureView = (TextureView) findViewById(R.id.cameraTextureView);
+                        mPreview = new CameraAPI(cameraActivity, mCameraTextureView);
+                        Log.d(TAG, "mPreview set");
+                    } else {
+                        Toast.makeText(this, "Should have camera permission to run", Toast.LENGTH_LONG).show();
+                        finish();
+                    }
+                }
+                break;
+        }
     }
 
     //initializing navigationbar
