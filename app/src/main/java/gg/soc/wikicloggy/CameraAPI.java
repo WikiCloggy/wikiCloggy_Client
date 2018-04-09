@@ -21,7 +21,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.util.Size;
@@ -96,7 +95,7 @@ public class CameraAPI extends Thread {
             mSensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
             int permissionCamera = ContextCompat.checkSelfPermission(mContext, Manifest.permission.CAMERA);
             if (permissionCamera == PackageManager.PERMISSION_DENIED) {
-                ActivityCompat.requestPermissions((Activity)mContext, new String[] {Manifest.permission.CAMERA}, CameraActivity.REQUEST_CAMERA);
+                //ActivityCompat.requestPermissions((Activity)mContext, new String[] {Manifest.permission.CAMERA}, CameraActivity.REQUEST_CAMERA);
             } else {
                 manager.openCamera(cameraId, mStateCallback, null);
             }
