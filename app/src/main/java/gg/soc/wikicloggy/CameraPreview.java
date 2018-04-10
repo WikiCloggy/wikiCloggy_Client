@@ -24,7 +24,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         //underlying surface is created and destroyed.
         mHolder = getHolder();
         mHolder.addCallback(this);
-        mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        mHolder.setType(SurfaceHolder.SURFACE_TYPE_NORMAL);
     }
 
     @Override
@@ -57,6 +57,8 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
+        mCamera.stopPreview();
+        mCamera.release();
 
     }
 }
