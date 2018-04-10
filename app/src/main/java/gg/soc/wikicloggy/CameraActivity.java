@@ -22,6 +22,9 @@ import com.kakao.usermgmt.callback.LogoutResponseCallback;
 public class CameraActivity extends Activity {
 
     ListView listView = null;
+    private CameraAdapter cameraAdapter;
+    private CameraPreview mPreview;
+    private Camera mCamera;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +36,12 @@ public class CameraActivity extends Activity {
         setCustomActionbar();
         setNavigationbar();
 
+        // Create an instance of Camera
+        mCamera = cameraAdapter.getCameraInstance();
+
+        mPreview = new CameraPreview(this, mCamera);
+        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+        preview.addView(mPreview);
     }
 
     @Override
