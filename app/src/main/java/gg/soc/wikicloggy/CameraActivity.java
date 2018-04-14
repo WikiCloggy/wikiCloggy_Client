@@ -61,6 +61,7 @@ public class CameraActivity extends Activity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
         switch (requestCode) {
             case REQUEST_CAMERA:
                 for (int i = 0; i < permissions.length; i++) {
@@ -90,13 +91,13 @@ public class CameraActivity extends Activity {
     @Override
     protected  void onPause() {
         super.onPause();
-        mPreview.onPause();
+        //mPreview.onPause();
     }
 
 
     //initializing navigationbar
     private void setNavigationbar() {
-        final String[] items = {"Logout", "B"};
+        final String[] items = {"Logout", "지식견", "Profile"};
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, items);
         listView = (ListView)findViewById(R.id.drawer_menulist);
         listView.setAdapter(adapter);
@@ -120,6 +121,10 @@ public class CameraActivity extends Activity {
                         });
                         break;
                     case 1:
+                        startActivity(new Intent(CameraActivity.this, BoardActivity.class));
+                        break;
+                    case 2:
+                        startActivity(new Intent(CameraActivity.this, ProfileActivity.class));
                         break;
                 }
                 DrawerLayout drawer = (DrawerLayout)findViewById(R.id.drawer);

@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.hardware.camera.autofocus" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.hardware.camera.front" />
     <uses-permission android:name="android.hardware.camera" />
 
@@ -32,7 +33,7 @@
         </activity>
         <activity
             android:name=".LoginActivity"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"></activity>
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
 
         <meta-data
             android:name="com.kakao.sdk.AppKey"
@@ -41,7 +42,8 @@
         <activity
             android:name=".CameraActivity"
             android:theme="@android:style/Theme.Holo" />
-        <activity android:name=".BoardActivity"></activity>
+        <activity android:name=".BoardActivity" />
+        <activity android:name=".ProfileActivity"></activity>
     </application>
 
 </manifest>
