@@ -6,9 +6,9 @@ package gg.soc.wikicloggy;
 
 public class User {
     private String name;
-    private int id;
+    private long id;
 
-    public User(int id, String name) {
+    public User(long id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -18,7 +18,7 @@ public class User {
     public String getName(){
         return name;
     }
-    public int getId() {
+    public long getId() {
         return id;
     }
 }

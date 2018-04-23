@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,7 +17,11 @@ import android.widget.Toast;
 import com.androidquery.AQuery;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
+import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.LoginButton;
+import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.MeResponseCallback;
+import com.kakao.usermgmt.response.model.UserProfile;
 import com.kakao.util.exception.KakaoException;
 import com.kakao.util.helper.log.Logger;
 
@@ -24,12 +29,16 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class LoginActivity extends Activity {
+    private static final String TAG = "LoginActivity";
+
     private SessionCallback callback;
     TextView user_nickname, user_email;
     CircleImageView user_img;
     LoginButton loginButton;
 
     AQuery aQuery;
+
+    public static long currentUserID = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +106,30 @@ public class LoginActivity extends Activity {
             if(Session.getCurrentSession().isOpened()) { //Session Check
                 redirectSignipActivity();
             }
+
+            //카카오 사용자 정보 요청
+            UserManagement.requestMe(new MeResponseCallback() {
+                //세션이 닫혀 실패한 경우로 에러 결과를 받음
+                @Override
+                public void onSessionClosed(ErrorResult errorResult) {
+
+                }
+                //사용자가 가입된 상태가 아니여서 실패한 경우
+                @Override
+                public void onNotSignedUp() {
+
+                }
+                //사용자 정보 요청이 성공한 경우로 사용자 정보 객체를 받음
+                @Override
+                public void onSuccess(UserProfile result) {
+                    DBController dbController = new DBController(getApplicationContext());
+                    if(dbController.getUser(result.getId())==null){
+                        dbController.addUser(new User(result.getId(), result.getNickname()));
+
+                    }
+                    currentUserID = result.getId();
+                }
+            });
         }
 
         @Override

@@ -40,7 +40,7 @@ public class DBController extends SQLiteOpenHelper {
         Log.d("DATABASE", "onCreate()");
         String CREATE_TABLE_USERLIST =
                 "CREATE TABLE "+TABLE_USER_LIST+" ("+
-                        KEY_USER_ID + " INT NOT NULL, "+
+                        KEY_USER_ID + " LONG NOT NULL, "+
                         KEY_USER_NAME+" TEXT NOT NULL"+
                         ");";
         Log.d(TAG, CREATE_TABLE_USERLIST);
@@ -62,16 +62,24 @@ public class DBController extends SQLiteOpenHelper {
         database.close();
     }
 
-    public User getUser(int id) {
+    public User getUser(long id) {
         User user = null;
         SQLiteDatabase database = getReadableDatabase();
-        String SELECT_USER = "SELECT * FROM "+TABLE_USER_LIST;
+        String SELECT_USER = "SELECT * FROM "+TABLE_USER_LIST+" WHERE "+KEY_USER_ID+"="+id;
+        Log.d(TAG, SELECT_USER);
         Cursor cursor = database.rawQuery(SELECT_USER, null);
         while(cursor.moveToNext()) {
-            int _id = cursor.getInt(0);
+            long _id = cursor.getLong(0);
             String _name = cursor.getString(1);
-            Log.d(TAG, String.valueOf(_id));
+            user = new User(_id, _name);
         }
+        database.close();
         return user;
+    }
+    public void modifyUser(User user) {
+        SQLiteDatabase database = getWritableDatabase();
+        String MODIFY_USER = "UPDATE "+TABLE_USER_LIST+" SET "+KEY_USER_NAME+" = '"+user.getName()+"' WHERE "+KEY_USER_ID+" = "+user.getId();
+        //Log.d(TAG, MODIFY_USER);
+        database.execSQL(MODIFY_USER);
     }
 }

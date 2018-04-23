@@ -23,6 +23,8 @@ import java.net.URI;
 
 public class ProfileActivity extends Activity implements View.OnClickListener {
 
+    private static final String TAG = "ProfileActivity";
+
     private static final int PICK_FROM_ALBUM = 1;
     private static final int CROP_FROM_IMAGE = 2;
 
@@ -47,7 +49,12 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         saveBtn = (Button)findViewById(R.id.saveBtn);
         nameText = (EditText)findViewById(R.id.nameText);
         saveBtn.setOnClickListener(this);
-        dbController.getUser(0);
+
+        //initializiing profile
+        //nameText.setText(dbController.getUser(0).getName());
+        if(dbController.getUser(LoginActivity.currentUserID).getName()!=null) {
+            nameText.setText(dbController.getUser(LoginActivity.currentUserID).getName());
+        }
     }
 
     @Override
@@ -128,7 +135,9 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         if(view.getId()==R.id.profileImageBtn) {
             doTakeAlbumPhoto();
         } else if (view.getId() == R.id.saveBtn) {
-            dbController.addUser(new User(0, nameText.getText().toString()));
+            if(nameText.getText() != null) {
+                dbController.modifyUser(new User(LoginActivity.currentUserID, nameText.getText().toString()));
+            }
         }
     }
 }
