@@ -3,6 +3,8 @@ package gg.soc.wikicloggy;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Environment;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -135,8 +138,13 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         if(view.getId()==R.id.profileImageBtn) {
             doTakeAlbumPhoto();
         } else if (view.getId() == R.id.saveBtn) {
-            if(nameText.getText() != null) {
-                dbController.modifyUser(new User(LoginActivity.currentUserID, nameText.getText().toString()));
+            if(nameText.getText().equals(null)) {
+                Toast.makeText(getApplicationContext(), "이름을 입력해주세요.", Toast.LENGTH_LONG).show();
+            } else {
+                //ImageView에서 가져온 drawable를 DB에 저장하기 위해서 bitmap으로 바꿈
+                Drawable drawable = profileImageView.getDrawable();
+                Bitmap profileBitmap = ((BitmapDrawable) drawable).getBitmap();
+                dbController.updateUser(new User(LoginActivity.currentUserID, nameText.getText().toString(), profileBitmap));
             }
         }
     }

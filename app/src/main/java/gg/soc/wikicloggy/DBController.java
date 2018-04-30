@@ -14,6 +14,7 @@ import java.util.jar.Attributes;
 
 /**
  * Created by userp on 2018-04-15.
+ * 내부적으로 사용되는 local DB를 관리하기 위해서 사용됨
  */
 
 public class DBController extends SQLiteOpenHelper {
@@ -77,9 +78,9 @@ public class DBController extends SQLiteOpenHelper {
         database.close();
         return user;
     }
-    public void modifyUser(User user) {
+    public void updateUser(User user) {
         SQLiteDatabase database = getWritableDatabase();
-        String MODIFY_USER = "UPDATE "+TABLE_USER_LIST+" SET "+KEY_USER_NAME+" = '"+user.getName()+"' WHERE "+KEY_USER_ID+" = "+user.getId();
+        String MODIFY_USER = "UPDATE " + TABLE_USER_LIST + " SET " + KEY_USER_NAME + " = '" + user.getName() + "' WHERE " + KEY_USER_ID + " = " + user.getId();
         //Log.d(TAG, MODIFY_USER);
         database.execSQL(MODIFY_USER);
     }

@@ -3,6 +3,8 @@ package gg.soc.wikicloggy;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidquery.AQuery;
+import com.androidquery.callback.BitmapAjaxCallback;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
 import com.kakao.network.ErrorResult;
@@ -24,6 +27,10 @@ import com.kakao.usermgmt.callback.MeResponseCallback;
 import com.kakao.usermgmt.response.model.UserProfile;
 import com.kakao.util.exception.KakaoException;
 import com.kakao.util.helper.log.Logger;
+
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -123,11 +130,15 @@ public class LoginActivity extends Activity {
                 @Override
                 public void onSuccess(UserProfile result) {
                     DBController dbController = new DBController(getApplicationContext());
-                    if(dbController.getUser(result.getId())==null){
-                        dbController.addUser(new User(result.getId(), result.getNickname()));
+                    if(dbController.getUser(result.getId()).equals(null)){ //Local DB에 사용자가 등록되어있지 않은 경우
+                        if(loadImageFromWebOperation(result.getProfileImagePath()).equals(null)) {  //사용자가 profile image를 사용하지 않는 경우
+                            dbController.addUser(new User(result.getId(), result.getNickname()));
+                        } else {    //사용자가 사용하는 profile image를 함께 저장
+                            dbController.addUser(new User(result.getId(), result.getNickname(), loadImageFromWebOperation(result.getThumbnailImagePath())));
+                        }
                     }
                     currentUserID = result.getId();
-                    Log.d(TAG, result.getThumbnailImagePath());
+                    Log.d(TAG, "url is "+loadImageFromWebOperation(result.getThumbnailImagePath()));
                 }
             });
         }
@@ -143,5 +154,21 @@ public class LoginActivity extends Activity {
         final Intent intent = new Intent(this, CameraActivity.class);
         startActivity(intent);
         finish();
+    }
+    private Bitmap loadImageFromWebOperation(String url) {
+        if(!url.equals(null)) {
+            try {
+                InputStream inputStream = (InputStream) new URL(url).getContent();
+                //HttpURLConnection connection = (HttpURLConnection)new URL(url).openConnection();
+                //connection.setRequestProperty();
+                Drawable drawable = Drawable.createFromStream(inputStream, "scr name");
+                return ((BitmapDrawable) drawable).getBitmap();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
 }

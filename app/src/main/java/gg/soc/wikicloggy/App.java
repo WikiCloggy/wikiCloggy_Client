@@ -21,6 +21,7 @@ import static com.kakao.util.helper.Utility.getPackageInfo;
 
 /**
  * Created by userp on 2018-03-31.
+ * 카카오 API를 사용하기 위한 java class
  */
 
 public class App extends Application{
