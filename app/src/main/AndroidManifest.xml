@@ -42,7 +42,8 @@
             android:name=".CameraActivity"
             android:theme="@android:style/Theme.Holo" />
         <activity android:name=".BoardActivity" />
-        <activity android:name=".ProfileActivity"></activity>
+        <activity android:name=".ProfileActivity" />
+        <activity android:name=".ResultActivity"></activity>
     </application>
 
 </manifest>

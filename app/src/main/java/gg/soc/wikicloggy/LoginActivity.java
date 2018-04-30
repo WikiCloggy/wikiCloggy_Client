@@ -125,9 +125,9 @@ public class LoginActivity extends Activity {
                     DBController dbController = new DBController(getApplicationContext());
                     if(dbController.getUser(result.getId())==null){
                         dbController.addUser(new User(result.getId(), result.getNickname()));
-
                     }
                     currentUserID = result.getId();
+                    Log.d(TAG, result.getThumbnailImagePath());
                 }
             });
         }

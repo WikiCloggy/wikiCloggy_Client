@@ -25,6 +25,8 @@ public class DBController extends SQLiteOpenHelper {
     private static final String TABLE_USER_LIST = "UserList";
     private static final String KEY_USER_NAME = "name";
     private static final String KEY_USER_ID = "id";
+    private static final String KEY_USER_IMAGE = "image";
+
     private static final int DATABASE_VERSION = 1;
 
     public DBController(Context context) {
@@ -41,10 +43,9 @@ public class DBController extends SQLiteOpenHelper {
         String CREATE_TABLE_USERLIST =
                 "CREATE TABLE "+TABLE_USER_LIST+" ("+
                         KEY_USER_ID + " LONG NOT NULL, "+
-                        KEY_USER_NAME+" TEXT NOT NULL"+
+                        KEY_USER_NAME+" TEXT NOT NULL, "+
+                        KEY_USER_IMAGE+" BLOB"+
                         ");";
-        Log.d(TAG, CREATE_TABLE_USERLIST);
-
         sqLiteDatabase.execSQL(CREATE_TABLE_USERLIST);
     }
 
