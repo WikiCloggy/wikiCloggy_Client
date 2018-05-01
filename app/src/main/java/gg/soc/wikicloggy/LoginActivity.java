@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -28,9 +30,11 @@ import com.kakao.usermgmt.response.model.UserProfile;
 import com.kakao.util.exception.KakaoException;
 import com.kakao.util.helper.log.Logger;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -42,7 +46,7 @@ public class LoginActivity extends Activity {
     TextView user_nickname, user_email;
     CircleImageView user_img;
     LoginButton loginButton;
-
+    DBController dbController;
     AQuery aQuery;
 
     public static long currentUserID = 0;
@@ -59,6 +63,8 @@ public class LoginActivity extends Activity {
         callback = new SessionCallback();
         Session.getCurrentSession().addCallback(callback);
         Session.getCurrentSession().checkAndImplicitOpen();
+
+        dbController = new DBController(getApplicationContext());
 
         //Kakao login buttion
         loginButton = (LoginButton)findViewById(R.id.com_kakao_login);
@@ -129,16 +135,16 @@ public class LoginActivity extends Activity {
                 //사용자 정보 요청이 성공한 경우로 사용자 정보 객체를 받음
                 @Override
                 public void onSuccess(UserProfile result) {
-                    DBController dbController = new DBController(getApplicationContext());
+                    GetXMLTask getXMLTask = new GetXMLTask();
+
                     if(dbController.getUser(result.getId()).equals(null)){ //Local DB에 사용자가 등록되어있지 않은 경우
-                        if(loadImageFromWebOperation(result.getProfileImagePath()).equals(null)) {  //사용자가 profile image를 사용하지 않는 경우
-                            dbController.addUser(new User(result.getId(), result.getNickname()));
-                        } else {    //사용자가 사용하는 profile image를 함께 저장
-                            dbController.addUser(new User(result.getId(), result.getNickname(), loadImageFromWebOperation(result.getThumbnailImagePath())));
+                        if(result.getThumbnailImagePath().equals(null)) {
+                            getXMLTask.execute(new String[] {result.getThumbnailImagePath()});
                         }
+                        dbController.addUser(new User(result.getId(), result.getNickname()));
                     }
                     currentUserID = result.getId();
-                    Log.d(TAG, "url is "+loadImageFromWebOperation(result.getThumbnailImagePath()));
+                    getXMLTask.execute(new String[] {result.getThumbnailImagePath()});
                 }
             });
         }
@@ -155,20 +161,60 @@ public class LoginActivity extends Activity {
         startActivity(intent);
         finish();
     }
-    private Bitmap loadImageFromWebOperation(String url) {
-        if(!url.equals(null)) {
+
+    /*
+    * 카카오 API가 제공하는 프로필 사진 url를 통해서
+    * 사진을 비동기적으로 다운 받을 수 있게 해주는 class
+    * */
+    private class GetXMLTask extends AsyncTask<String, Void, Bitmap> {
+
+        @Override
+        protected Bitmap doInBackground(String... strings) {
+            Bitmap bitmap = null;
+            for (String url : strings) {
+                bitmap = downloadImage(url);
+            }
+            return bitmap;
+        }
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            dbController.updateProfileImg(new User(currentUserID, result));
+        }
+        //Creates Bitmap from InputStream and resturns it
+        private Bitmap downloadImage(String url) {
+            Bitmap bitmap = null;
+            InputStream stream = null;
+            BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+            bitmapOptions.inSampleSize = 1;
+
             try {
-                InputStream inputStream = (InputStream) new URL(url).getContent();
-                //HttpURLConnection connection = (HttpURLConnection)new URL(url).openConnection();
-                //connection.setRequestProperty();
-                Drawable drawable = Drawable.createFromStream(inputStream, "scr name");
-                return ((BitmapDrawable) drawable).getBitmap();
+                stream = getHttpConnection(url);
+                bitmap = BitmapFactory.decodeStream(stream, null, bitmapOptions);
+                stream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return bitmap;
+        }
+
+        //Makes HttpURLConnction and returns InputStream
+        private InputStream getHttpConnection(String urlString) throws IOException {
+            InputStream stream = null;
+            URL url = new URL(urlString);
+            URLConnection connection = url.openConnection();
+
+            try {
+                HttpURLConnection httpURLConnection = (HttpURLConnection) connection;
+                httpURLConnection.setRequestMethod("GET");
+                httpURLConnection.connect();
+
+                if(httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                    stream = httpURLConnection.getInputStream();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
-                return null;
             }
-        } else {
-            return null;
+            return stream;
         }
     }
 }

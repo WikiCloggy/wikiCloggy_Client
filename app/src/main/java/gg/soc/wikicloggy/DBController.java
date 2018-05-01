@@ -5,9 +5,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.jar.Attributes;
@@ -80,8 +82,27 @@ public class DBController extends SQLiteOpenHelper {
     }
     public void updateUser(User user) {
         SQLiteDatabase database = getWritableDatabase();
-        String MODIFY_USER = "UPDATE " + TABLE_USER_LIST + " SET " + KEY_USER_NAME + " = '" + user.getName() + "' WHERE " + KEY_USER_ID + " = " + user.getId();
-        //Log.d(TAG, MODIFY_USER);
-        database.execSQL(MODIFY_USER);
+        String MODIFY_USER = null;
+        MODIFY_USER = "UPDATE " + TABLE_USER_LIST + " SET " + KEY_USER_NAME + " = '" + user.getName() + "' WHERE " + KEY_USER_ID + " = " + user.getId();
+        if(!MODIFY_USER.equals(null)) {
+            database.execSQL(MODIFY_USER);
+        }
+    }
+    public void updateProfileImg(User user) {
+        SQLiteDatabase database = getWritableDatabase();
+        String UPDATE_PROFILE_IMG = "UPDATE "+TABLE_USER_LIST + " SET "+KEY_USER_IMAGE+ " = '"+getByteArrayFromBitmap(user.getBitmapImg())+"' WHERE "+KEY_USER_ID+" = "+user.getId();
+        if(!UPDATE_PROFILE_IMG.equals(null)) {
+            database.execSQL(UPDATE_PROFILE_IMG);
+        }
+    }
+
+    /*
+    * SQLite에 저장하기 위해서 Bitmap 이미지를 Byte array로 변환
+    * */
+    public byte[] getByteArrayFromBitmap(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteData = stream.toByteArray();
+        return byteData;
     }
 }

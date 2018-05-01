@@ -9,19 +9,17 @@ import android.graphics.Bitmap;
  */
 
 public class User {
-    private String name;
+    private String name = null;
     private long id;
-    private String imagePath;
-    private Bitmap bitmapImg;
+    private Bitmap bitmapImg = null;
 
     public User(long id, String name) {
         this.id = id;
         this.name = name;
     }
-    public User(long id, String name, String imagePath) {
+    public User(long id, Bitmap bitmap) {
         this.id = id;
-        this.name = name;
-        this.imagePath = imagePath;
+        this.bitmapImg = bitmap;
     }
     public User(long id, String name, Bitmap bitmapImg) {
         this.id = id;
@@ -36,8 +34,8 @@ public class User {
         return name;
     }
 
-    public void setImagePath(String imagePath) { this.imagePath = imagePath; }
-    public String getImagePath() { return imagePath; }
+    public void setBitmapImg(Bitmap bitmapImg) { this.bitmapImg = bitmapImg; }
+    public Bitmap getBitmapImg () { return bitmapImg; }
     public long getId() {
         return id;
     }
