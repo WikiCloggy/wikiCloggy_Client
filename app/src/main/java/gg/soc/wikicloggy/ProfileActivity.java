@@ -56,7 +56,9 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         //initializiing profile
         //nameText.setText(dbController.getUser(0).getName());
         if(dbController.getUser(LoginActivity.currentUserID).getName()!=null) {
-            nameText.setText(dbController.getUser(LoginActivity.currentUserID).getName());
+            User _user = dbController.getUser(LoginActivity.currentUserID);
+            nameText.setText(_user.getName());
+            profileImageView.setImageBitmap(_user.getBitmapImg());
         }
     }
 
@@ -144,7 +146,10 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
                 //ImageView에서 가져온 drawable를 DB에 저장하기 위해서 bitmap으로 바꿈
                 Drawable drawable = profileImageView.getDrawable();
                 Bitmap profileBitmap = ((BitmapDrawable) drawable).getBitmap();
-                dbController.updateUser(new User(LoginActivity.currentUserID, nameText.getText().toString(), profileBitmap));
+                dbController.updateUser(new User(LoginActivity.currentUserID, nameText.getText().toString()));
+                dbController.updateProfileImg(new User(LoginActivity.currentUserID, profileBitmap));
+
+                Toast.makeText(getApplicationContext(), "저장이 완료되었습니다.", Toast.LENGTH_SHORT).show();
             }
         }
     }

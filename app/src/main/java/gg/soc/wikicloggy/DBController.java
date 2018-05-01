@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -75,7 +76,8 @@ public class DBController extends SQLiteOpenHelper {
         while(cursor.moveToNext()) {
             long _id = cursor.getLong(0);
             String _name = cursor.getString(1);
-            user = new User(_id, _name);
+            byte[] _image = cursor.getBlob(2);
+            user = new User(_id, _name, getBitmapFromByteArray(_image));
         }
         database.close();
         return user;
@@ -90,10 +92,11 @@ public class DBController extends SQLiteOpenHelper {
     }
     public void updateProfileImg(User user) {
         SQLiteDatabase database = getWritableDatabase();
-        String UPDATE_PROFILE_IMG = "UPDATE "+TABLE_USER_LIST + " SET "+KEY_USER_IMAGE+ " = '"+getByteArrayFromBitmap(user.getBitmapImg())+"' WHERE "+KEY_USER_ID+" = "+user.getId();
-        if(!UPDATE_PROFILE_IMG.equals(null)) {
-            database.execSQL(UPDATE_PROFILE_IMG);
-        }
+        //String UPDATE_PROFILE_IMG = "UPDATE "+TABLE_USER_LIST + " SET "+KEY_USER_IMAGE+ " = '"+getByteArrayFromBitmap(user.getBitmapImg())+"' WHERE "+KEY_USER_ID+" = "+user.getId();
+        ContentValues values = new ContentValues();
+        values.put(KEY_USER_IMAGE, getByteArrayFromBitmap(user.getBitmapImg()));
+
+        database.update(TABLE_USER_LIST, values, KEY_USER_ID+" = "+user.getId(), null);
     }
 
     /*
@@ -104,5 +107,13 @@ public class DBController extends SQLiteOpenHelper {
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte[] byteData = stream.toByteArray();
         return byteData;
+    }
+
+    /*
+    * SQLite에 저장했던 Byte array를 다시 Bitmap 이미지로 변환
+    * */
+    public Bitmap getBitmapFromByteArray(byte[] bytes) {
+        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        return bitmap;
     }
 }

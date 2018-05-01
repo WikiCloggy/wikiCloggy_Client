@@ -137,14 +137,14 @@ public class LoginActivity extends Activity {
                 public void onSuccess(UserProfile result) {
                     GetXMLTask getXMLTask = new GetXMLTask();
 
-                    if(dbController.getUser(result.getId()).equals(null)){ //Local DB에 사용자가 등록되어있지 않은 경우
-                        if(result.getThumbnailImagePath().equals(null)) {
+                    if(dbController.getUser(result.getId())==null){ //Local DB에 사용자가 등록되어있지 않은 경우
+                        if(result.getThumbnailImagePath() == null) {
+                            Log.d(TAG, "add profil image from kakao api url");
                             getXMLTask.execute(new String[] {result.getThumbnailImagePath()});
                         }
                         dbController.addUser(new User(result.getId(), result.getNickname()));
                     }
                     currentUserID = result.getId();
-                    getXMLTask.execute(new String[] {result.getThumbnailImagePath()});
                 }
             });
         }
