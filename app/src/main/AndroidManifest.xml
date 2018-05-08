@@ -33,6 +33,7 @@
         <activity
             android:name=".LoginActivity"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+        <activity android:name=".BoardActivity" />
 
         <meta-data
             android:name="com.kakao.sdk.AppKey"
@@ -41,9 +42,9 @@
         <activity
             android:name=".CameraActivity"
             android:theme="@android:style/Theme.Holo" />
-        <activity android:name=".BoardActivity" />
         <activity android:name=".ProfileActivity" />
-        <activity android:name=".ResultActivity"></activity>
+        <activity android:name=".ResultActivity" />
+        <activity android:name=".MapActivity"></activity>
     </application>
 
 </manifest>
