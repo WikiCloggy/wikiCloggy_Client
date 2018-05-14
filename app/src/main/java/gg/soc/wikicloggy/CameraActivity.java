@@ -149,7 +149,7 @@ public class CameraActivity extends Activity {
 
     //initializing navigationbar
     private void setNavigationbar() {
-        final String[] items = {"Logout", "지식견", "Profile", "Map"};
+        final String[] items = {"Logout", "지식견", "Profile", "Map", "Log"};
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, items);
         listView = (ListView)findViewById(R.id.drawer_menulist);
         listView.setAdapter(adapter);
@@ -180,6 +180,9 @@ public class CameraActivity extends Activity {
                         break;
                     case 3:
                         startActivity(new Intent(CameraActivity.this, MapActivity.class));
+                        break;
+                    case 4:
+                        startActivity(new Intent(CameraActivity.this, UserLogActivity.class));
                 }
                 DrawerLayout drawer = (DrawerLayout)findViewById(R.id.drawer);
                 drawer.closeDrawer(Gravity.LEFT);

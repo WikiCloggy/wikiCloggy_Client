@@ -25,6 +25,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile group: 'com.kakao.sdk', name: 'usermgmt', version: project.KAKAO_SDK_VERSION
+    compile files('libs/libDaumMapAndroid.jar')
     compile 'com.android.support:appcompat-v7:26.+'
     compile 'com.android.support:design:26.+'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
@@ -32,6 +33,5 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:1.2.1'
     compile 'com.google.android.gms:play-services-ads:11.0.4'
     compile 'com.github.bumptech.glide:glide:3.7.0'
-    compile files('libs/libDaumMapAndroid.jar')
     testCompile 'junit:junit:4.12'
 }

@@ -52,6 +52,7 @@ import java.util.concurrent.Semaphore;
 
 /**
  * Created by userp on 2018-04-10.
+ * Camera2 API를 사용하여 화면에 카메라 프리뷰를 띄우고 사진을 찍는 기능까지 담당하는 class
  */
 
 public class Preview extends Thread {

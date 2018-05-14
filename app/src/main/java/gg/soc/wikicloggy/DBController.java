@@ -77,7 +77,11 @@ public class DBController extends SQLiteOpenHelper {
             long _id = cursor.getLong(0);
             String _name = cursor.getString(1);
             byte[] _image = cursor.getBlob(2);
-            user = new User(_id, _name, getBitmapFromByteArray(_image));
+            if(_image == null) {
+                user = new User(_id, _name);
+            } else {
+                user = new User(_id, _name, getBitmapFromByteArray(_image));
+            }
         }
         database.close();
         return user;
