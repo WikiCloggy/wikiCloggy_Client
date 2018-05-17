@@ -30,6 +30,9 @@ import com.kakao.usermgmt.response.model.UserProfile;
 import com.kakao.util.exception.KakaoException;
 import com.kakao.util.helper.log.Logger;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -136,10 +139,10 @@ public class LoginActivity extends Activity {
                 @Override
                 public void onSuccess(UserProfile result) {
                     GetXMLTask getXMLTask = new GetXMLTask();
-
+                    //CreateUserTask createUserTask = new CreateUserTask(new User(result.getId(), result.getNickname()));
+                    //createUserTask.execute();
                     if(dbController.getUser(result.getId())==null){ //Local DB에 사용자가 등록되어있지 않은 경우
-                        if(result.getThumbnailImagePath() == null) {
-                            Log.d(TAG, "add profil image from kakao api url");
+                        if(result.getThumbnailImagePath() != null) {
                             getXMLTask.execute(new String[] {result.getThumbnailImagePath()});
                         }
                         dbController.addUser(new User(result.getId(), result.getNickname()));
@@ -180,41 +183,66 @@ public class LoginActivity extends Activity {
         protected void onPostExecute(Bitmap result) {
             dbController.updateProfileImg(new User(currentUserID, result));
         }
-        //Creates Bitmap from InputStream and resturns it
-        private Bitmap downloadImage(String url) {
-            Bitmap bitmap = null;
-            InputStream stream = null;
-            BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
-            bitmapOptions.inSampleSize = 1;
+    }
+    /*
+    public class CreateUserTask extends AsyncTask<Void, Void, Void> {
+        String url = "http://ec2-13-125-187-247.ap-northeast-2.compute.amazonaws.com:3000/api/user/";
+        User user;
+        JSONObject jsonObject = new JSONObject();
+        RequestHttpURLConnection urlConnection = new RequestHttpURLConnection();
 
+        public CreateUserTask(User user) {
+            this.user = user;
+        }
+        @Override
+        protected Void doInBackground(Void... voids) {
             try {
-                stream = getHttpConnection(url);
-                bitmap = BitmapFactory.decodeStream(stream, null, bitmapOptions);
-                stream.close();
-            } catch (IOException e) {
+                jsonObject.put("user_code", user.getId());
+                jsonObject.put("name", user.getName());
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
-            return bitmap;
+
+            String result = urlConnection.requestHttpPost(url, jsonObject);
+            Log.d(TAG, "hello "+result);
+            return null;
         }
+    }
+    */
+    //Creates Bitmap from InputStream and resturns it
+    private Bitmap downloadImage(String url) {
+        Bitmap bitmap = null;
+        InputStream stream = null;
+        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+        bitmapOptions.inSampleSize = 1;
 
-        //Makes HttpURLConnction and returns InputStream
-        private InputStream getHttpConnection(String urlString) throws IOException {
-            InputStream stream = null;
-            URL url = new URL(urlString);
-            URLConnection connection = url.openConnection();
+        try {
+            stream = getHttpConnection(url);
+            bitmap = BitmapFactory.decodeStream(stream, null, bitmapOptions);
+            stream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bitmap;
+    }
 
-            try {
-                HttpURLConnection httpURLConnection = (HttpURLConnection) connection;
-                httpURLConnection.setRequestMethod("GET");
-                httpURLConnection.connect();
+    //Makes HttpURLConnction and returns InputStream
+    private InputStream getHttpConnection(String urlString) throws IOException {
+        InputStream stream = null;
+        URL url = new URL(urlString);
+        URLConnection connection = url.openConnection();
 
-                if(httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                    stream = httpURLConnection.getInputStream();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+        try {
+            HttpURLConnection httpURLConnection = (HttpURLConnection) connection;
+            httpURLConnection.setRequestMethod("GET");
+            httpURLConnection.connect();
+
+            if(httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                stream = httpURLConnection.getInputStream();
             }
-            return stream;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return stream;
     }
 }

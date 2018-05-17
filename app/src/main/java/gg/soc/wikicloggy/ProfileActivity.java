@@ -60,6 +60,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
 
         //initializiing profile
         //nameText.setText(dbController.getUser(0).getName());
+        Log.d(TAG, "hello "+LoginActivity.currentUserID);
         if(dbController.getUser(LoginActivity.currentUserID).getName()!=null) {
             User _user = dbController.getUser(LoginActivity.currentUserID);
             nameText.setText(_user.getName());
@@ -157,57 +158,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
                 dbController.updateProfileImg(new User(LoginActivity.currentUserID, profileBitmap));
 
                 Toast.makeText(getApplicationContext(), "저장이 완료되었습니다.", Toast.LENGTH_SHORT).show();
-
-                JSONObject jsonObject = new JSONObject();
-                try {
-                    jsonObject.put("user_code", "hyeon");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                DoTest doTest = new DoTest(jsonObject);
-                doTest.execute();
-
             }
-        }
-    }
-
-    public class NetworkTask extends AsyncTask<Void, Void, String> {
-        private String url = "http://ec2-13-125-187-247.ap-northeast-2.compute.amazonaws.com:3000/api/user/show";
-
-        @Override
-        protected String doInBackground(Void... params) {
-            String result;
-            RequestHttpURLConnection requestHttpURLConnection = new RequestHttpURLConnection();
-            result = requestHttpURLConnection.requestHttpGet(url);
-
-            return result;
-        }
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            //doInBackground()로 부터 리턴된 값이 onPostExecute()의 매개변수로 넘어오므로 s를 출력한다.
-            Log.d(TAG, s);
-
-        }
-    }
-    public class DoTest extends AsyncTask<Void, Void, String> {
-        private String url = "http://ec2-13-125-187-247.ap-northeast-2.compute.amazonaws.com:3000/api/user";
-        JSONObject jsonObject;
-        public DoTest (JSONObject object) {
-            jsonObject = object;
-        }
-
-        @Override
-        protected String doInBackground(Void... voids) {
-            RequestHttpURLConnection requestHttpURLConnection = new RequestHttpURLConnection();
-            return requestHttpURLConnection.requestHttpPost(url, jsonObject);
-        }
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            //doInBackground()로 부터 리턴된 값이 onPostExecute()의 매개변수로 넘어오므로 s를 출력한다.
-            Log.d(TAG, s);
-
         }
     }
 }

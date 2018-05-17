@@ -38,6 +38,7 @@ public class RequestHttpURLConnection {
             String input;
             StringBuffer stringBuffer = new StringBuffer();
 
+
             while((input = reader.readLine())!= null) {
                 stringBuffer.append(input);
             }
@@ -63,7 +64,7 @@ public class RequestHttpURLConnection {
             String json = jsonObject.toString();
 
             OutputStream outputStream = httpURLConnection.getOutputStream();
-            outputStream.write(json.getBytes("euc-kr"));
+            outputStream.write(json.getBytes("UTF-8"));
             outputStream.flush();
             outputStream.close();
 
