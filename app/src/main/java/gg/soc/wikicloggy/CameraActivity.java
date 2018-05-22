@@ -30,6 +30,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.os.Bundle;
@@ -57,7 +58,7 @@ public class CameraActivity extends Activity {
     static final int REQUEST_CAMERA = 1;
 
     Button takePictureBtn;
-    Button getFromAlbumBtn;
+    ImageButton getFromAlbumBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +74,7 @@ public class CameraActivity extends Activity {
         mPreview = new Preview(this, mCameraTextureView);
 
         takePictureBtn = (Button) findViewById(R.id.takePictureBtn);
-        getFromAlbumBtn = (Button) findViewById(R.id.getFromAlbumBtn);
+        getFromAlbumBtn = (ImageButton) findViewById(R.id.getFromAlbumBtn);
 
         takePictureBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,7 +90,6 @@ public class CameraActivity extends Activity {
                 startActivityForResult(intent, PICK_FROM_ALBUM);
             }
         });
-
 
     }
 
