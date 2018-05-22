@@ -13,6 +13,7 @@
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
@@ -48,7 +49,10 @@
         <activity android:name=".ProfileActivity" />
         <activity android:name=".ResultActivity" />
         <activity android:name=".MapActivity" />
-        <activity android:name=".UserLogActivity"></activity>
+        <activity android:name=".UserLogActivity" />
+        <activity android:name=".CreatePostActivity" />
+        <activity android:name=".PostLogActivity" />
+        <activity android:name=".PostActivity"></activity>
     </application>
 
 </manifest>

@@ -19,6 +19,7 @@
         android:id="@+id/drawer"
         android:layout_width="0dp"
         android:layout_height="0dp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -28,9 +29,10 @@
 
 
         <ListView
+            android:background="@color/secondColor"
             android:id="@+id/drawer_menulist"
             android:layout_width="200dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="left" />
 
     </android.support.v4.widget.DrawerLayout>
