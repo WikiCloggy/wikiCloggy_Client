@@ -2,41 +2,39 @@ package gg.soc.wikicloggy;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 
-public class ResultActivity extends Activity {
-
-    ImageView userImageView;
-    ImageView exampleImageView1;
-    ImageView exampleImageView2;
-    ImageView exampleImageView3;
+public class ResultFailActivity extends Activity {
+    ImageView resultFailImageView;
+    Button resultFailGoQuestionBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_result);
-        Drawable drawable = getDrawable(R.drawable.main_cloggy);
-
-        userImageView = (ImageView) findViewById(R.id.resultUserImageView);
-        exampleImageView1 = (ImageView) findViewById(R.id.resultExampleImageView1);
-        exampleImageView2 = (ImageView) findViewById(R.id.resultExampleImageView2);
-        exampleImageView3 = (ImageView) findViewById(R.id.resultExampleImageView3);
-
+        setContentView(R.layout.activity_result_fail);
 
         setCustomActionbar();
-        userImageView.setImageDrawable(drawable);
-        exampleImageView1.setImageDrawable(drawable);
-        exampleImageView2.setImageDrawable(drawable);
-        exampleImageView3.setImageDrawable(drawable);
+
+        Drawable drawable = getDrawable(R.drawable.main_cloggy);
+        resultFailImageView = (ImageView) findViewById(R.id.resultFailImageView);
+        resultFailImageView.setImageDrawable(drawable);
+
+        resultFailGoQuestionBtn = (Button) findViewById(R.id.resultFailGoQuestionBtn);
+        resultFailGoQuestionBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(ResultFailActivity.this, BoardActivity.class));
+                finish();
+            }
+        });
     }
-
-
-
     private void setCustomActionbar() {
         ActionBar actionBar = getActionBar();
 

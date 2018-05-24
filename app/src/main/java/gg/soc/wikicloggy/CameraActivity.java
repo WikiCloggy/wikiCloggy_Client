@@ -80,6 +80,7 @@ public class CameraActivity extends Activity {
             @Override
             public void onClick(View view) {
                 mPreview.takePicture();
+                startActivity(new Intent(CameraActivity.this, WaitingResultActivity.class));
             }
         });
         getFromAlbumBtn.setOnClickListener(new View.OnClickListener() {
