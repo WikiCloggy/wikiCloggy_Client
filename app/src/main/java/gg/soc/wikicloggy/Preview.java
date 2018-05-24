@@ -308,8 +308,6 @@ public class Preview extends Thread {
                         byte[] bytes = new byte[buffer.capacity()];
                         buffer.get(bytes);
                         save(bytes, filepath);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
                     } catch (IOException e) {
                         e.printStackTrace();
                     } finally {
@@ -329,12 +327,8 @@ public class Preview extends Thread {
                     Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                     BufferedOutputStream out = null;
 
-                    try {
-                        out = new BufferedOutputStream(new FileOutputStream(copyFile));
-                        bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    out = new BufferedOutputStream(new FileOutputStream(copyFile));
+                    bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
                 }
             };
 

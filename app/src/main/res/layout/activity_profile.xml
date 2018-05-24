@@ -35,6 +35,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:focusedByDefault="true"
+        android:focusable="true"
         android:orientation="horizontal">
 
         <TextView
@@ -49,7 +51,7 @@
 
         <EditText
             android:id="@+id/nameText"
-            android:layout_width="200dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:layout_weight="1"

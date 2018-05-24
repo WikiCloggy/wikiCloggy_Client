@@ -23,6 +23,7 @@ public class SplashActivity extends Activity {
         runningcloggy = (ImageView)findViewById(R.id.running_wikicloggy);
         GlideDrawableImageViewTarget gifImage = new GlideDrawableImageViewTarget(runningcloggy);
         Glide.with(this).load(R.drawable.running_cloggy).into(gifImage);
+
         //Intent intent = new Intent(this, LoginActivity.class);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
