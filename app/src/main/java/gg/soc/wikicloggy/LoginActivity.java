@@ -3,14 +3,16 @@ package gg.soc.wikicloggy;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,7 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidquery.AQuery;
-import com.androidquery.callback.BitmapAjaxCallback;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
 import com.kakao.network.ErrorResult;
@@ -33,11 +34,20 @@ import com.kakao.util.helper.log.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.List;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -139,8 +149,9 @@ public class LoginActivity extends Activity {
                 @Override
                 public void onSuccess(UserProfile result) {
                     GetXMLTask getXMLTask = new GetXMLTask();
-                    //CreateUserTask createUserTask = new CreateUserTask(new User(result.getId(), result.getNickname()));
-                    //createUserTask.execute();
+                    CreateUserTask createUserTask = new CreateUserTask(new User(result.getId(), result.getNickname()), result.getThumbnailImagePath());
+                    createUserTask.execute();
+
                     if(dbController.getUser(result.getId())==null){ //Local DB에 사용자가 등록되어있지 않은 경우
                         if(result.getThumbnailImagePath() != null) {
                             getXMLTask.execute(new String[] {result.getThumbnailImagePath()});
@@ -184,31 +195,35 @@ public class LoginActivity extends Activity {
             dbController.updateProfileImg(new User(currentUserID, result));
         }
     }
-    /*
+
     public class CreateUserTask extends AsyncTask<Void, Void, Void> {
         String url = "http://ec2-13-125-187-247.ap-northeast-2.compute.amazonaws.com:3000/api/user/";
         User user;
+        String imgPath;
         JSONObject jsonObject = new JSONObject();
         RequestHttpURLConnection urlConnection = new RequestHttpURLConnection();
-
-        public CreateUserTask(User user) {
+        public CreateUserTask(User user, String imgPath) {
             this.user = user;
+            this.imgPath = imgPath;
         }
         @Override
         protected Void doInBackground(Void... voids) {
+
             try {
                 jsonObject.put("user_code", user.getId());
                 jsonObject.put("name", user.getName());
+                jsonObject.put("avatar_path", imgPath);
             } catch (JSONException e) {
                 e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
-            String result = urlConnection.requestHttpPost(url, jsonObject);
-            Log.d(TAG, "hello "+result);
+            String response = urlConnection.requestHttpPost(url, jsonObject);
+            Log.d(TAG, "hello "+response);
             return null;
         }
     }
-    */
+
     //Creates Bitmap from InputStream and resturns it
     private Bitmap downloadImage(String url) {
         Bitmap bitmap = null;
