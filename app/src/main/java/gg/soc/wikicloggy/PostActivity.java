@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 public class PostActivity extends Activity {
     ImageView imageView;
+    ImageView commentImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +22,9 @@ public class PostActivity extends Activity {
         Drawable drawable = getDrawable(R.drawable.main_cloggy);
         imageView = (ImageView) findViewById(R.id.postImageView);
         imageView.setImageDrawable(drawable);
-        String id = intent.getStringExtra("id");
-        Toast.makeText(this, "id is "+id, Toast.LENGTH_SHORT).show();
+        commentImageView = (ImageView)findViewById(R.id.commentImageView);
+        commentImageView.setImageDrawable(drawable);
+
+        //String id = intent.getStringExtra("id"); 인텐트로 스트링 받아오는 법
     }
 }
