@@ -1,42 +1,47 @@
 package gg.soc.wikicloggy;
 
-import android.graphics.Bitmap;
-import android.os.AsyncTask;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 /**
  * Created by userp on 2018-05-14.
  */
 
-public class HttpInterface extends AsyncTask<Void, Void, String>{
+public class HttpInterface {
 
-    private final static String TAG = "HttpInterface";
+//    private String serverUrl = "http://ec2-13-125-187-247.ap-northeast-2.compute.amazonaws.com";
+    private String serverUrl = "http://192.168.10.162";
 
-//    private final static String url = "http://ec2-13-125-187-247.ap-northeast-2.compute.amazonaws.com:3000";
-    private final static String url = "http://192.168.0.58:3000/";
-    //특정 user_code의 정보 보기
-//    private final static String get_user_url = "/api/user/detail/"; //+user_code
-//    //해당 user_code의 profile 정보 수정
-//    private final static String post_user_profile_url = "/api/user/profile/"; //+user_code
-//    //user_code profile 사진 path 설정
-//    private final static String post_user_profile_image_url = "/api/user/profile/files/"; //+user_code
-//    //user create
-//    private final static String post_user_create_url = "/api/user/";
+    private String port =":3000/";
+    private String apiPath;
 
-//    RequestHttpURLConnection urlConnection = new RequestHttpURLConnection();
+    public HttpInterface(String type, User user){
+        switch(type)
+        {
+            case "user" : // user create
+                apiPath ="api/user/";
+                break;
+            case "profile" :
+                apiPath ="api/profile/"+user.getId();
+                break;
+            case "avatar" :
+                apiPath="api/prifile/files/"+user.getId();
+                break;
+            case "board" :
+                break;
+            case "log" :
+                break;
+        }
 
-    private long userCode;
-
-    public HttpInterface (User user) {
-        this.userCode = user.getId();
     }
 
-    @Override
-    protected String doInBackground(Void... voids) {
-        return null;
-    }
-    @Override
-    protected void onPostExecute(String s) {
-        super.onPostExecute(s);
-        //doInBackground()로 부터 리턴된 값이 onPostExecute()의 매개변수로 넘어오므로 s를 출력한다.
+    public String getserverUrl () {
+        return serverUrl + port + apiPath;
     }
 }

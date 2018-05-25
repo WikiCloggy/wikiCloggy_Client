@@ -197,14 +197,17 @@ public class LoginActivity extends Activity {
     }
 
     public class CreateUserTask extends AsyncTask<Void, Void, Void> {
-        String url = "http://ec2-13-125-187-247.ap-northeast-2.compute.amazonaws.com:3000/api/user/";
+        HttpInterface server;
         User user;
+        String url;
         String imgPath;
         JSONObject jsonObject = new JSONObject();
         RequestHttpURLConnection urlConnection = new RequestHttpURLConnection();
         public CreateUserTask(User user, String imgPath) {
             this.user = user;
             this.imgPath = imgPath;
+            server = new HttpInterface("user", user);
+            url = server.getserverUrl();
         }
         @Override
         protected Void doInBackground(Void... voids) {
