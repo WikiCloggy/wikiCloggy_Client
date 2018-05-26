@@ -59,7 +59,7 @@ public class LoginActivity extends Activity {
     AQuery aQuery;
 
     public static long currentUserID = 0;
-
+///////////////////////////// To do 로그인할 때 서버 데이터 가져와서 user local db update.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -181,8 +181,9 @@ public class LoginActivity extends Activity {
         @Override
         protected Bitmap doInBackground(String... strings) {
             Bitmap bitmap = null;
+            HttpInterface downloadImage = new HttpInterface();
             for (String url : strings) {
-                bitmap = downloadImage(url);
+                bitmap = downloadImage.getBitmapImage(url);
             }
             return bitmap;
         }
@@ -220,42 +221,5 @@ public class LoginActivity extends Activity {
             }
             return null;
         }
-    }
-
-    //Creates Bitmap from InputStream and resturns it
-    private Bitmap downloadImage(String url) {
-        Bitmap bitmap = null;
-        InputStream stream = null;
-        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
-        bitmapOptions.inSampleSize = 1;
-
-        try {
-            stream = getHttpConnection(url);
-            bitmap = BitmapFactory.decodeStream(stream, null, bitmapOptions);
-            stream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return bitmap;
-    }
-
-    //Makes HttpURLConnction and returns InputStream
-    private InputStream getHttpConnection(String urlString) throws IOException {
-        InputStream stream = null;
-        URL url = new URL(urlString);
-        URLConnection connection = url.openConnection();
-
-        try {
-            HttpURLConnection httpURLConnection = (HttpURLConnection) connection;
-            httpURLConnection.setRequestMethod("GET");
-            httpURLConnection.connect();
-
-            if(httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                stream = httpURLConnection.getInputStream();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return stream;
     }
 }

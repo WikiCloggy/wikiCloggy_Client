@@ -1,5 +1,8 @@
 package gg.soc.wikicloggy;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -41,8 +44,27 @@ public class HttpInterface {
 
     }
 
+    public HttpInterface(){};
+
     public String getserverUrl() {
         return requestURL;
+    }
+
+    public Bitmap getBitmapImage (String URL) {
+        this.requestURL = URL;
+        try {
+            URL url = new URL(requestURL);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setDoInput(true);
+            conn.connect();
+
+            InputStream is = conn.getInputStream();
+            return BitmapFactory.decodeStream(is);
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public String postFile(String filepath) {

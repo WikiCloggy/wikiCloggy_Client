@@ -55,7 +55,6 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         saveBtn.setOnClickListener(this);
 
         //initializiing profile
-        // 서버에서 받아와서 띄워주기 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11hyeon's
         //nameText.setText(dbController.getUser(0).getName());
         Log.d(TAG, "hello " + LoginActivity.currentUserID);
         if (dbController.getUser(LoginActivity.currentUserID).getName() != null) {
