@@ -3,17 +3,13 @@ package gg.soc.wikicloggy;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -216,13 +212,12 @@ public class LoginActivity extends Activity {
                 jsonObject.put("user_code", user.getId());
                 jsonObject.put("name", user.getName());
                 jsonObject.put("avatar_path", imgPath);
+                urlConnection.requestHttpPost(url, jsonObject);
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            String response = urlConnection.requestHttpPost(url, jsonObject);
-            Log.d(TAG, "hello "+response);
             return null;
         }
     }
