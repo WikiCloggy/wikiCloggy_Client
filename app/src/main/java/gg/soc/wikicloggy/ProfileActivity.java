@@ -146,12 +146,11 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
     }
 
     public class sendAvatar extends AsyncTask <Void, Void, Void> {
-
         HttpInterface postAvatar;
         String response;
         String realPath;
-        public sendAvatar(String imgPath, User user) {
-            this.postAvatar = new HttpInterface("avatar", user);
+        public sendAvatar(String imgPath) {
+            this.postAvatar = new HttpInterface("avatar");
             this.realPath = imgPath;
         }
 
@@ -161,33 +160,28 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
                 response = postAvatar.postFile(realPath);
             } catch (Exception e) {
                 Log.d(TAG,"send Avatar fail");
-
             }
+            Log.d(TAG, response);
             return null;
         }
     }
     public class sendName extends AsyncTask<Void, Void, Void> {
-        HttpInterface server;
-        User user;
-        String url;
+        HttpInterface postJson;
+        String response;
         JSONObject jsonObject = new JSONObject();
-        RequestHttpURLConnection urlConnection = new RequestHttpURLConnection();
-        public sendName(User user) {
-            this.user = user;
-            server = new HttpInterface("profile", user);
-            url = server.getserverUrl();
+        public sendName() {
+            postJson = new HttpInterface("profile");
         }
         @Override
         protected Void doInBackground(Void... voids) {
 
             try {
-                jsonObject.put("name", user.getName());
-                urlConnection.requestHttpPost(url, jsonObject);
+                jsonObject.put("name", nameText.getText());
+                response = postJson.postJson(jsonObject);
             } catch (JSONException e) {
                 e.printStackTrace();
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+            Log.d(TAG, response);
             return null;
         }
     }
@@ -205,9 +199,11 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
                     Bitmap profileBitmap = ((BitmapDrawable) drawable).getBitmap();
                     dbController.updateUser(new User(LoginActivity.currentUserID, nameText.getText().toString()));
                     dbController.updateProfileImg(new User(LoginActivity.currentUserID, profileBitmap));
-                    sendAvatar sendAvatar = new sendAvatar(absolutePath, new User(LoginActivity.currentUserID, nameText.getText().toString()));
-                    sendAvatar.execute();
-                    sendName sendName = new sendName(new User(LoginActivity.currentUserID, nameText.getText().toString()));
+                    if(absolutePath != null) {
+                        sendAvatar sendAvatar = new sendAvatar(absolutePath);
+                        sendAvatar.execute();
+                    }
+                    sendName sendName = new sendName();
                     sendName.execute();
                     Toast.makeText(getApplicationContext(), "저장이 완료되었습니다.", Toast.LENGTH_SHORT).show();
                 }

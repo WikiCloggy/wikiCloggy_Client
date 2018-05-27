@@ -2,6 +2,10 @@ package gg.soc.wikicloggy;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -23,17 +27,30 @@ public class HttpInterface {
     private String port = ":3000/";
     private String apiPath;
     private String requestURL = null;
+    private long user_code;
 
-    public HttpInterface(String type, User user) {
+    public HttpInterface() { // this is for download image
+        user_code = LoginActivity.currentUserID;
+    };
+
+    public HttpInterface(String type) {
+        user_code = LoginActivity.currentUserID;
+       this.setUrl(type);
+    }
+
+    public String setUrl(String type) {
         switch (type) {
-            case "user": // user create
+            case "createUser": // user create
                 apiPath = "api/user/";
                 break;
+            case "getUser" : // get user info
+                apiPath = "api/user/details/" +user_code;
+                break;
             case "profile": // edit profile, name
-                apiPath = "api/user/profile/" + user.getId();
+                apiPath = "api/user/profile/" + user_code;
                 break;
             case "avatar": // upload file
-                apiPath = "api/user/profile/files/" + user.getId();
+                apiPath = "api/user/profile/files/" + user_code;
                 break;
             case "board":
                 break;
@@ -41,19 +58,16 @@ public class HttpInterface {
                 break;
         }
         requestURL = serverUrl + port + apiPath;
-
-    }
-
-    public HttpInterface(){};
-
-    public String getserverUrl() {
         return requestURL;
     }
 
-    public Bitmap getBitmapImage (String URL) {
-        this.requestURL = URL;
+    public String getUrl() {
+        return requestURL;
+    }
+
+    public Bitmap getBitmapImage (String imageUrl) {
         try {
-            URL url = new URL(requestURL);
+            URL url = new URL(imageUrl);
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setDoInput(true);
@@ -65,6 +79,31 @@ public class HttpInterface {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public JSONObject getUser () {
+        RequestHttpURLConnection urlConnection=null;
+        String response;
+
+        try {
+            urlConnection = new RequestHttpURLConnection();
+            response = urlConnection.requestHttpGet(this.setUrl("getUser"));
+
+            JSONArray json = new JSONArray(response);
+            JSONObject userData = json.getJSONObject(0);
+            return userData;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String postJson(JSONObject formdata) {
+        String response = null;
+        Log.d("hyeon", getUrl());
+        RequestHttpURLConnection urlConnection = new RequestHttpURLConnection();
+        response = urlConnection.requestHttpPost(getUrl(),formdata);
+        return response;
     }
 
     public String postFile(String filepath) {
