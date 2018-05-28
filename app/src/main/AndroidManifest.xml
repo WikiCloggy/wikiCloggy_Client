@@ -59,7 +59,8 @@
         <activity
             android:name=".ResultFailActivity"
             android:theme="@android:style/Theme.Holo" />
-        <activity android:name=".CreateCommentActivity"></activity>
+        <activity android:name=".CreateCommentActivity"
+            android:theme="@android:style/Theme.Holo"></activity>
     </application>
 
 </manifest>
