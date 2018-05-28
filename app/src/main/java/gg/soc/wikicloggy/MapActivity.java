@@ -8,6 +8,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -43,11 +44,6 @@ public class MapActivity extends AppCompatActivity {
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-
-        //mapView = new MapView(this);
-
-        //container = (RelativeLayout) findViewById(R.id.map_view);
-        //container.addView(mapView);
         try {
             if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED) {
                 if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
@@ -70,6 +66,8 @@ public class MapActivity extends AppCompatActivity {
         try {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1, mLocationListener);
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 100, 1, mLocationListener);
+            //StopMapTask stopMapTask = new StopMapTask();
+            //stopMapTask.execute();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -81,8 +79,8 @@ public class MapActivity extends AppCompatActivity {
             lat = location.getLatitude();
             String url = "daummaps://search?q=동물 병원&p="+lat+", "+lon;
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-
-
+            locationManager.removeUpdates(mLocationListener);
+            finish();
         }
 
         @Override
@@ -100,4 +98,17 @@ public class MapActivity extends AppCompatActivity {
 
         }
     };
+    class StopMapTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                Thread.sleep(2000);
+                locationManager.removeUpdates(mLocationListener);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
 }

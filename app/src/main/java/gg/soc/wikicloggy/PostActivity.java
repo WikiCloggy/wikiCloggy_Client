@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 public class PostActivity extends Activity {
     ImageView imageView;
-    ImageView commentImageView;
+    Button writeCommentBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,9 +24,15 @@ public class PostActivity extends Activity {
         Drawable drawable = getDrawable(R.drawable.main_cloggy);
         imageView = (ImageView) findViewById(R.id.postImageView);
         imageView.setImageDrawable(drawable);
-        commentImageView = (ImageView)findViewById(R.id.commentImageView);
-        commentImageView.setImageDrawable(drawable);
 
+        writeCommentBtn = (Button) findViewById(R.id.writeCommentBtn);
         //String id = intent.getStringExtra("id"); 인텐트로 스트링 받아오는 법
+
+        writeCommentBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(PostActivity.this, CreateCommentActivity.class));
+            }
+        });
     }
 }
