@@ -56,8 +56,10 @@
         <activity android:name=".PostLogActivity" />
         <activity android:name=".PostActivity" />
         <activity android:name=".WaitingResultActivity" />
-        <activity android:name=".ResultFailActivity"
-            android:theme="@android:style/Theme.Holo"></activity>
+        <activity
+            android:name=".ResultFailActivity"
+            android:theme="@android:style/Theme.Holo" />
+        <activity android:name=".CreateCommentActivity"></activity>
     </application>
 
 </manifest>

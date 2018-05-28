@@ -110,7 +110,7 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/mainColor"
@@ -123,28 +123,17 @@
         app:layout_constraintRight_toRightOf="parent"
         android:id="@+id/linearLayout4">
 
-        <ImageView
-            android:id="@+id/commentImageView"
-            android:layout_width="30dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/main_cloggy" />
-
-        <EditText
-            android:id="@+id/commentBodyTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:ems="10"
-            android:hint="enter the comment"
-            android:inputType="textPersonName" />
-
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/writeCommentBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:text="Button" />
-    </LinearLayout>
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:text="Write comment"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            tools:layout_editor_absoluteY="0dp" />
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>
