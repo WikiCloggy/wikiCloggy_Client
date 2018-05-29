@@ -7,31 +7,33 @@
     android:weightSum="1">
 
     <TextView
-        android:id="@+id/textView14"
+        android:id="@+id/commentItemIdTextView"
         android:layout_width="wrap_content"
+        android:padding="5dp"
         android:layout_height="wrap_content"
         android:text="Id" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="5dp"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textView13"
+            android:id="@+id/commentItemBodyTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="body" />
 
         <TextView
-            android:id="@+id/textView12"
+            android:id="@+id/commentItemKeywordTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="keyword" />
 
     </LinearLayout>
     <ImageView
-        android:id="@+id/imageView4"
+        android:id="@+id/commentItemBoneImageView"
         android:layout_width="10dp"
         android:layout_height="37dp"
         app:srcCompat="@drawable/bone0"

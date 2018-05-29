@@ -1,6 +1,7 @@
 package gg.soc.wikicloggy;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -19,7 +20,7 @@ import android.widget.RelativeLayout;
 import net.daum.mf.map.api.MapView;
 
 
-public class MapActivity extends AppCompatActivity {
+public class MapActivity extends Activity {
     private final static String TAG = "MapActivity";
     //MapView mapView;
     private final static int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 101;
