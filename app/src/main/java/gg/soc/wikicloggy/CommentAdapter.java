@@ -1,6 +1,7 @@
 package gg.soc.wikicloggy;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,6 +54,16 @@ public class CommentAdapter extends BaseAdapter {
             keywordTextView = (TextView)view.findViewById(R.id.commentItemKeywordTextView);
             boneImageView = (ImageView) view.findViewById(R.id.commentItemBoneImageView);
         }
-        return null;
+        nameTextView.setText(commentItemArrayList.get(i).getName());
+        bodyTextView.setText(commentItemArrayList.get(i).getBody());
+        keywordTextView.setText(commentItemArrayList.get(i).getKeywords());
+
+        if(commentItemArrayList.get(i).isAdopted()) {
+            boneImageView.setImageResource(R.drawable.bone1);
+        } else if(!commentItemArrayList.get(i).isAdopted()) {
+            boneImageView.setImageResource(R.drawable.bone0);
+        }
+
+        return view;
     }
 }

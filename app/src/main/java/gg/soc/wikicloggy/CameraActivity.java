@@ -150,9 +150,24 @@ public class CameraActivity extends Activity {
         protected Void doInBackground(Void... params) {
             try {
                 response = postFile.postFile("logFile",realPath);
-                Log.d("TAG",  response.toString()); // here key word return ******************************************************
+                Log.d(TAG,  response.toString()); // here key word return ******************************************************
+                Intent intent = new Intent(CameraActivity.this, ResultActivity.class);
+                JSONArray jsonArray = new JSONArray(response);
+                JSONObject jsonObject = jsonArray.getJSONObject(0);
+                JSONArray imageJsonArray = new JSONArray(jsonObject.get("ref").toString());
+                JSONObject imageJsonObject0 = new JSONObject(imageJsonArray.getJSONObject(0).toString());
+                JSONObject imageJsonObject1 = new JSONObject(imageJsonArray.getJSONObject(1).toString());
+                JSONObject imageJsonObject2 = new JSONObject(imageJsonArray.getJSONObject(2).toString());
+
+                intent.putExtra("keyword", jsonObject.get("keyword").toString());
+                intent.putExtra("analysis", jsonObject.get("analysis").toString());
+                intent.putExtra("image0", imageJsonObject0.get("img_path").toString());
+                intent.putExtra("image1", imageJsonObject1.get("img_path").toString());
+                intent.putExtra("image2", imageJsonObject2.get("img_path").toString());
+                startActivity(intent);
             } catch (Exception e) {
-                Log.d(TAG,"send Avatar fail");
+                e.printStackTrace();
+                //Log.d(TAG,"send Avatar fail");
             }
             return null;
         }
