@@ -66,6 +66,7 @@
         android:id="@+id/resultKeywordTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/black"
         android:layout_margin="20dp"
         android:textSize="20dp"
         android:text="Keyword" />
@@ -82,6 +83,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
             android:text="Explain"
+            android:textColor="@color/black"
             android:textSize="20dp" />
     </FrameLayout>
 
