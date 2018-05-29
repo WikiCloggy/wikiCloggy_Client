@@ -40,6 +40,10 @@ import android.support.v7.app.AppCompatActivity;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.LogoutResponseCallback;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
@@ -94,7 +98,66 @@ public class CameraActivity extends Activity {
         });
 
     }
+    public class leaveLog extends AsyncTask<String, String, String> {
+        HttpInterface postJson;
+        String response;
+        String DBid;
+        String imgPath;
+        JSONObject jsonObject = new JSONObject();
+        public leaveLog(String imgPath) {
+            this.imgPath= imgPath;
+            postJson = new HttpInterface("log");
+        }
+        @Override
+        protected String doInBackground(String... strings) {
 
+            try {
+                jsonObject.put("user_code", LoginActivity.currentUserID);
+                response = postJson.postJson(jsonObject);
+                JSONObject log = new JSONObject(response);
+                DBid = log.getString("_id");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return DBid;
+        }
+
+        @Override
+        protected void onPostExecute(String result){
+            askAnalysis analysis = new askAnalysis(imgPath, result);
+            analysis.execute();
+        }
+    }
+    public String getPath(Uri uri) {
+        String[] projection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = managedQuery(uri, projection, null, null, null);
+        startManagingCursor(cursor);
+        int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(columnIndex);
+    }
+    public class askAnalysis extends AsyncTask <Void, Void, Void> {
+        HttpInterface postFile;
+        String response;
+        String realPath;
+        public askAnalysis(String imgPath, String DB_id) {
+            this.postFile = new HttpInterface("analysis");
+            postFile.addToUrl(DB_id);
+            this.realPath = imgPath;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                response = postFile.postFile("logFile",realPath);
+                Log.d("TAG",  response.toString()); // here key word return ******************************************************
+            } catch (Exception e) {
+                Log.d(TAG,"send Avatar fail");
+            }
+            return null;
+        }
+
+    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -102,12 +165,14 @@ public class CameraActivity extends Activity {
         switch (requestCode) {
             case PICK_FROM_ALBUM:
                 Uri imageUri = data.getData();
-                try {
-                    InputStream inputStream = getContentResolver().openInputStream(imageUri);
-                    Bitmap seletedImage = BitmapFactory.decodeStream(inputStream);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    InputStream inputStream = getContentResolver().openInputStream(imageUri);
+//                    Bitmap seletedImage = BitmapFactory.decodeStream(inputStream);
+//                } catch (FileNotFoundException e) {
+//                    e.printStackTrace();
+//                }
+                leaveLog leaveLog = new leaveLog(getPath(imageUri));
+                leaveLog.execute();
         }
 
     }

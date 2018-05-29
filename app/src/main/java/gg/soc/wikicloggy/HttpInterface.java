@@ -22,8 +22,8 @@ import java.net.URL;
 
 public class HttpInterface {
 
-    private String serverUrl = "http://ec2-13-125-187-247.ap-northeast-2.compute.amazonaws.com";
-//    private String serverUrl = "http://192.168.10.162"; // for local test
+//    private String serverUrl = "http://ec2-13-125-187-247.ap-northeast-2.compute.amazonaws.com";
+    private String serverUrl = "http://172.30.1.53"; // for local test
     private String port = ":3000/";
     private String apiPath;
     private String requestURL = null;
@@ -54,10 +54,20 @@ public class HttpInterface {
                 break;
             case "board":
                 break;
-            case "log":
+            case "log" : // upload photos to analysis
+                apiPath = "api/log/";
+                break;
+            case "analysis" :
+                apiPath = "api/log/files/"; // + db id
                 break;
         }
         requestURL = serverUrl + port + apiPath;
+        Log.d("hyeon", requestURL);
+        return requestURL;
+    }
+
+    public String addToUrl (String string) {
+        requestURL += string;
         return requestURL;
     }
 
@@ -99,14 +109,13 @@ public class HttpInterface {
     }
 
     public String postJson(JSONObject formdata) {
-        String response = null;
-        Log.d("hyeon", getUrl());
+        String response;
         RequestHttpURLConnection urlConnection = new RequestHttpURLConnection();
-        response = urlConnection.requestHttpPost(getUrl(),formdata);
+        response = urlConnection.requestHttpPost(this.getUrl(),formdata);
         return response;
     }
 
-    public String postFile(String filepath) {
+    public String postFile(String fileField,String filepath) {
         if (requestURL != null) {
             try {
                 HttpURLConnection connection = null;
@@ -128,7 +137,7 @@ public class HttpInterface {
                 connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
                 outputStream = new DataOutputStream(connection.getOutputStream());
                 outputStream.writeBytes("--" + boundary + "\r\n");
-                outputStream.writeBytes("Content-Disposition: form-data; name=\"" + "avatarFile" + "\"; filename=\"" + file.getName() + "\"" + "\r\n");
+                outputStream.writeBytes("Content-Disposition: form-data; name=\"" + fileField + "\"; filename=\"" + file.getName() + "\"" + "\r\n");
                 outputStream.writeBytes("Content-Type: image/jpeg" + "\r\n");
                 outputStream.writeBytes("Content-Transfer-Encoding: binary" + "\r\n");
                 outputStream.writeBytes("\r\n");

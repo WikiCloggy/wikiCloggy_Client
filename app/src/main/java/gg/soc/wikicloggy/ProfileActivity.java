@@ -157,7 +157,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                response = postAvatar.postFile(realPath);
+                response = postAvatar.postFile("avatarFile",realPath);
             } catch (Exception e) {
                 Log.d(TAG,"send Avatar fail");
             }
