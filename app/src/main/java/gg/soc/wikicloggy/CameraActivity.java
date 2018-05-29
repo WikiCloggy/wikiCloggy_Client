@@ -14,6 +14,7 @@ import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.icu.text.LocaleDisplayNames;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentManagerNonConfig;
@@ -80,7 +81,7 @@ public class CameraActivity extends Activity {
             @Override
             public void onClick(View view) {
                 mPreview.takePicture();
-                startActivity(new Intent(CameraActivity.this, WaitingResultActivity.class));
+                //startActivity(new Intent(CameraActivity.this, WaitingResultActivity.class));
             }
         });
         getFromAlbumBtn.setOnClickListener(new View.OnClickListener() {
@@ -206,5 +207,4 @@ public class CameraActivity extends Activity {
 
         actionBar.setCustomView(actionbar);
     }
-
 }

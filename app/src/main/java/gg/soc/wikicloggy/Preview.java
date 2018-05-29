@@ -319,6 +319,8 @@ public class Preview extends Thread {
                 }
 
                 private void save(byte[] bytes, String filePath) throws IOException {
+
+                    Log.d(TAG, "Save image");
                     String dirPath = Environment.getExternalStorageDirectory().getAbsolutePath()+"/Wikicloggy";;
                     File directoryWikicloggy = new File(dirPath);
 
