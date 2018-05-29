@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.io.File;
 
 public class ResultActivity extends Activity {
 
@@ -34,6 +37,8 @@ public class ResultActivity extends Activity {
     String imgPath1;
     String imgPath2;
 
+    String userImage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +51,9 @@ public class ResultActivity extends Activity {
         imgPath0 = intent.getStringExtra("image0");
         imgPath1 = intent.getStringExtra("image1");
         imgPath2 = intent.getStringExtra("image2");
+        userImage = intent.getStringExtra("userImage");
+
+        //Log.d(TAG, userImage);
 
         userImageView = (ImageView) findViewById(R.id.resultUserImageView);
         exampleImageView1 = (ImageView) findViewById(R.id.resultExampleImageView1);
@@ -60,6 +68,13 @@ public class ResultActivity extends Activity {
         //exampleImageView1.setImageDrawable(drawable);
         exampleImageView2.setImageDrawable(drawable);
         exampleImageView3.setImageDrawable(drawable);
+
+        File file = new File(userImage);
+        if(file.exists()) {
+            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+            Log.d(TAG, bitmap.toString());
+            userImageView.setImageBitmap(bitmap);
+        }
 
         keywordTextView.setText(keyword);
         analysisTextView.setText(analysis);

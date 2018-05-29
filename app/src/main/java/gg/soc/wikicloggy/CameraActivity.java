@@ -103,9 +103,11 @@ public class CameraActivity extends Activity {
         String response;
         String DBid;
         String imgPath;
+
         JSONObject jsonObject = new JSONObject();
         public leaveLog(String imgPath) {
             this.imgPath= imgPath;
+
             postJson = new HttpInterface("log");
         }
         @Override
@@ -140,10 +142,12 @@ public class CameraActivity extends Activity {
         HttpInterface postFile;
         String response;
         String realPath;
+
         public askAnalysis(String imgPath, String DB_id) {
             this.postFile = new HttpInterface("analysis");
             postFile.addToUrl(DB_id);
             this.realPath = imgPath;
+
         }
 
         @Override
@@ -153,6 +157,9 @@ public class CameraActivity extends Activity {
                 Log.d(TAG,  response.toString()); // here key word return ******************************************************
                 Intent intent = new Intent(CameraActivity.this, ResultActivity.class);
                 JSONArray jsonArray = new JSONArray(response);
+
+                Log.d(TAG, realPath);
+
                 JSONObject jsonObject = jsonArray.getJSONObject(0);
                 JSONArray imageJsonArray = new JSONArray(jsonObject.get("ref").toString());
                 JSONObject imageJsonObject0 = new JSONObject(imageJsonArray.getJSONObject(0).toString());
@@ -164,6 +171,8 @@ public class CameraActivity extends Activity {
                 intent.putExtra("image0", imageJsonObject0.get("img_path").toString());
                 intent.putExtra("image1", imageJsonObject1.get("img_path").toString());
                 intent.putExtra("image2", imageJsonObject2.get("img_path").toString());
+                intent.putExtra("userImage", realPath);
+
                 startActivity(intent);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -180,12 +189,7 @@ public class CameraActivity extends Activity {
         switch (requestCode) {
             case PICK_FROM_ALBUM:
                 Uri imageUri = data.getData();
-//                try {
-//                    InputStream inputStream = getContentResolver().openInputStream(imageUri);
-//                    Bitmap seletedImage = BitmapFactory.decodeStream(inputStream);
-//                } catch (FileNotFoundException e) {
-//                    e.printStackTrace();
-//                }
+
                 leaveLog leaveLog = new leaveLog(getPath(imageUri));
                 leaveLog.execute();
         }
