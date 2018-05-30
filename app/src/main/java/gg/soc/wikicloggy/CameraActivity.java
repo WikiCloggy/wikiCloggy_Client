@@ -33,6 +33,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -64,6 +65,7 @@ public class CameraActivity extends Activity {
 
     Button takePictureBtn;
     ImageButton getFromAlbumBtn;
+    FrameLayout waitingFrameLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,11 +77,16 @@ public class CameraActivity extends Activity {
         setCustomActionbar();
         setNavigationbar();
 
+
         mCameraTextureView = (TextureView) findViewById(R.id.cameraTextureView);
         mPreview = new Preview(this, mCameraTextureView);
 
         takePictureBtn = (Button) findViewById(R.id.takePictureBtn);
         getFromAlbumBtn = (ImageButton) findViewById(R.id.getFromAlbumBtn);
+
+        waitingFrameLayout = (FrameLayout) findViewById(R.id.waitingFrameLayout);
+        waitingFrameLayout.setVisibility(View.INVISIBLE);
+
 
         takePictureBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,6 +133,7 @@ public class CameraActivity extends Activity {
 
         @Override
         protected void onPostExecute(String result){
+            Log.d("hyeon", result);
             askAnalysis analysis = new askAnalysis(imgPath, result);
             analysis.execute();
         }
@@ -146,8 +154,23 @@ public class CameraActivity extends Activity {
         public askAnalysis(String imgPath, String DB_id) {
             this.postFile = new HttpInterface("analysis");
             postFile.addToUrl(DB_id);
+            Log.d("hyeon", postFile.getUrl());
             this.realPath = imgPath;
+        }
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //setContentView(R.layout.waiting_server);
+            waitingFrameLayout.setVisibility(View.VISIBLE);
+
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            //setContentView(R.layout.activity_camera);
+            waitingFrameLayout.setVisibility(View.INVISIBLE);
         }
 
         @Override
@@ -155,7 +178,7 @@ public class CameraActivity extends Activity {
             try {
                 response = postFile.postFile("logFile",realPath);
                 Log.d(TAG,  response.toString()); // here key word return ******************************************************
-                Intent intent = new Intent(CameraActivity.this, ResultActivity.class);
+                Intent intent;
                 JSONArray jsonArray = new JSONArray(response);
 
                 Log.d(TAG, realPath);
@@ -166,14 +189,19 @@ public class CameraActivity extends Activity {
                 JSONObject imageJsonObject1 = new JSONObject(imageJsonArray.getJSONObject(1).toString());
                 JSONObject imageJsonObject2 = new JSONObject(imageJsonArray.getJSONObject(2).toString());
 
-                intent.putExtra("keyword", jsonObject.get("keyword").toString());
-                intent.putExtra("analysis", jsonObject.get("analysis").toString());
-                intent.putExtra("image0", imageJsonObject0.get("img_path").toString());
-                intent.putExtra("image1", imageJsonObject1.get("img_path").toString());
-                intent.putExtra("image2", imageJsonObject2.get("img_path").toString());
-                intent.putExtra("userImage", realPath);
+                if(jsonObject.get("keyword").toString() == "") {
+                    intent = new Intent(CameraActivity.this, ResultFailActivity.class);
+                } else {
+                    intent = new Intent(CameraActivity.this, ResultActivity.class);
+                    intent.putExtra("keyword", jsonObject.get("keyword").toString());
+                    intent.putExtra("analysis", jsonObject.get("analysis").toString());
+                    intent.putExtra("image0", imageJsonObject0.get("img_path").toString());
+                    intent.putExtra("image1", imageJsonObject1.get("img_path").toString());
+                    intent.putExtra("image2", imageJsonObject2.get("img_path").toString());
+                    intent.putExtra("userImage", realPath);
 
-                startActivity(intent);
+                    startActivity(intent);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 //Log.d(TAG,"send Avatar fail");

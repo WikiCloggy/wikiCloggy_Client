@@ -23,7 +23,7 @@ import java.net.URL;
 public class HttpInterface {
 
     private String serverUrl = "http://ec2-13-125-187-247.ap-northeast-2.compute.amazonaws.com";
-    //private String serverUrl = "http://172.30.1.53"; // for local test
+    //private String serverUrl = "http://172.20.10.2"; // for local test
     private String port = ":3000/";
     private String apiPath;
     private String requestURL = null;

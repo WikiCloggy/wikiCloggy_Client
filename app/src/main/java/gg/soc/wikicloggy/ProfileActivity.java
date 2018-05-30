@@ -12,10 +12,12 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -41,6 +43,8 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
 
     private EditText nameText;
     private Button saveBtn;
+    private Bitmap bitmap;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,15 +58,14 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         nameText = (EditText) findViewById(R.id.nameText);
         saveBtn.setOnClickListener(this);
 
+
+        HttpInterface httpInterface = new HttpInterface();
         //initializiing profile
-        //nameText.setText(dbController.getUser(0).getName());
-        Log.d(TAG, "hello " + LoginActivity.currentUserID);
         if (dbController.getUser(LoginActivity.currentUserID).getName() != null) {
             User _user = dbController.getUser(LoginActivity.currentUserID);
             nameText.setText(_user.getName());
-            if (_user.getBitmapImg() != null) {
-                profileImageView.setImageBitmap(_user.getBitmapImg());
-            }
+            bitmap = httpInterface.getBitmapImage(_user.getAvatarPath());
+            profileImageView.setImageBitmap(bitmap);
         }
     }
     public String getPath(Uri uri) {
@@ -172,15 +175,22 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         public sendName() {
             postJson = new HttpInterface("profile");
         }
-        @Override
-        protected Void doInBackground(Void... voids) {
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
             try {
                 jsonObject.put("name", nameText.getText());
-                response = postJson.postJson(jsonObject);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            response = postJson.postJson(jsonObject);
+
             Log.d(TAG, response);
             return null;
         }
@@ -195,10 +205,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
                     Toast.makeText(getApplicationContext(), "이름을 입력해주세요.", Toast.LENGTH_LONG).show();
                 } else {
                     //ImageView에서 가져온 drawable를 DB에 저장하기 위해서 bitmap으로 바꿈
-                    Drawable drawable = profileImageView.getDrawable();
-                    Bitmap profileBitmap = ((BitmapDrawable) drawable).getBitmap();
                     dbController.updateUser(new User(LoginActivity.currentUserID, nameText.getText().toString()));
-                    dbController.updateProfileImg(new User(LoginActivity.currentUserID, profileBitmap));
                     if(absolutePath != null) {
                         sendAvatar sendAvatar = new sendAvatar(absolutePath);
                         sendAvatar.execute();

@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -53,7 +54,7 @@ public class LoginActivity extends Activity {
         Session.getCurrentSession().addCallback(callback);
         Session.getCurrentSession().checkAndImplicitOpen();
 
-        dbController = new DBController(getApplicationContext());
+        dbController = new DBController(this);
 
         //Kakao login buttion
         loginButton = (LoginButton)findViewById(R.id.com_kakao_login);
@@ -124,19 +125,13 @@ public class LoginActivity extends Activity {
                 //사용자 정보 요청이 성공한 경우로 사용자 정보 객체를 받음
                 @Override
                 public void onSuccess(UserProfile result) {
-                    GetXMLTask getXMLTask = new GetXMLTask();
                     currentUserID = result.getId();
                     currentUser = new User(result.getId());
+
                     kakaoUser = new User(currentUserID,result.getNickname(),result.getThumbnailImagePath());
 
                     CreateUserTask createUserTask = new CreateUserTask();
                     createUserTask.execute();
-
-                    getUserTask getUserTask = new getUserTask();
-                    getUserTask.execute();
-
-                    getXMLTask.execute();
-
                 }
             });
         }
@@ -157,15 +152,17 @@ public class LoginActivity extends Activity {
     /*
     URL의 파일을 비동기적으로 다운로드 받아 Bitmap 이미지로 변환. (Profile Image)
     변환 후의 Bitmap 이미지는 로컬 DB에 저장.
-    */
+
     private class GetXMLTask extends AsyncTask<String, Void, Bitmap> {
 
         @Override
         protected Bitmap doInBackground(String... strings) {
+            Log.d(TAG, "Get XML Task");
             Bitmap bitmap = null;
             HttpInterface downloadImage = new HttpInterface();
             if(currentUser.getAvatarPath()!=null)
              bitmap = downloadImage.getBitmapImage(currentUser.getAvatarPath());
+
 
             return bitmap;
         }
@@ -175,6 +172,7 @@ public class LoginActivity extends Activity {
             dbController.updateProfileImg(new User(currentUserID, result));
         }
     }
+    */
 
     public class CreateUserTask extends AsyncTask<Void, Void, Void> {
         JSONObject jsonObject = new JSONObject();
@@ -184,7 +182,6 @@ public class LoginActivity extends Activity {
         }
         @Override
         protected Void doInBackground(Void... voids) {
-
             try {
                 jsonObject.put("user_code", kakaoUser.getId());
                 jsonObject.put("name", kakaoUser.getName());
@@ -194,6 +191,16 @@ public class LoginActivity extends Activity {
                 e.printStackTrace();
             }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            //서버에서 유저 생성/확인 후 서버에서 유저 정보를 가져옴
+            //From server and save local db
+            getUserTask getUserTask = new getUserTask();
+            getUserTask.execute();
         }
     }
 
@@ -210,17 +217,23 @@ public class LoginActivity extends Activity {
                 currentUser.setName(json.getString("name"));
                 currentUser.setAvatarPath(json.getString("avatar_path"));
 
-                if(dbController.getUser(currentUserID)==null){ //Local DB에 사용자가 등록되어있지 않은 경우
+                if(dbController.getUser(currentUserID) == null){ //Local DB에 사용자가 등록되어있지 않은 경우
                     if(currentUser.getAvatarPath()!=null) {
                         dbController.addUser(new User(currentUserID, currentUser.getName(),currentUser.getAvatarPath()));
                     }
-                    else  dbController.addUser(new User(currentUserID, currentUser.getName()));
+                    else  {
+                        dbController.addUser(new User(currentUserID, currentUser.getName()));
+                    }
+                } else {
+                    dbController.updateUser(new User(currentUserID, currentUser.getName(), currentUser.getAvatarPath()));
                 }
+
             }
             catch(Exception e){
-
+                e.printStackTrace();
             }
             return null;
         }
+
     }
 }

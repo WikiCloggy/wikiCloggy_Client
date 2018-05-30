@@ -3,6 +3,7 @@ package gg.soc.wikicloggy;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -20,6 +21,7 @@ import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -36,6 +38,10 @@ import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -334,6 +340,10 @@ public class Preview extends Thread {
 
                     out = new BufferedOutputStream(new FileOutputStream(copyFile));
                     bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
+
+                    leaveLog leaveLog = new leaveLog(filePath);
+                    leaveLog.execute();
+
                 }
             };
 
@@ -347,7 +357,6 @@ public class Preview extends Thread {
                 public void onCaptureCompleted(CameraCaptureSession session,
                                                CaptureRequest request, TotalCaptureResult result) {
                     super.onCaptureCompleted(session, request, result);
-                    //Toast.makeText(mContext, "Saved:"+filepath, Toast.LENGTH_SHORT).show();
                     startPreview();
                 }
 
@@ -373,4 +382,94 @@ public class Preview extends Thread {
             e.printStackTrace();
         }
     }
+    public class leaveLog extends AsyncTask<String, String, String> {
+        HttpInterface postJson;
+        String response;
+        String DBid;
+        String imgPath;
+
+        JSONObject jsonObject = new JSONObject();
+        public leaveLog(String imgPath) {
+            this.imgPath= imgPath;
+            postJson = new HttpInterface("log");
+        }
+        @Override
+        protected String doInBackground(String... strings) {
+
+            try {
+                jsonObject.put("user_code", LoginActivity.currentUserID);
+                response = postJson.postJson(jsonObject);
+                JSONObject log = new JSONObject(response);
+                DBid = log.getString("_id");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return DBid;
+        }
+
+        @Override
+        protected void onPostExecute(String result){
+            askAnalysis analysis = new askAnalysis(imgPath, result);
+            analysis.execute();
+        }
+    }
+    public class askAnalysis extends AsyncTask <Void, Void, Void> {
+        HttpInterface postFile;
+        String response;
+        String realPath;
+
+        public askAnalysis(String imgPath, String DB_id) {
+            this.postFile = new HttpInterface("analysis");
+            postFile.addToUrl(DB_id);
+            this.realPath = imgPath;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                response = postFile.postFile("logFile",realPath);
+                Log.d(TAG,  response.toString()); // here key word return ******************************************************
+                Intent intent;
+                JSONArray jsonArray = new JSONArray(response);
+
+                Log.d(TAG, realPath);
+
+                JSONObject jsonObject = jsonArray.getJSONObject(0);
+                JSONArray imageJsonArray = new JSONArray(jsonObject.get("ref").toString());
+                JSONObject imageJsonObject0 = new JSONObject(imageJsonArray.getJSONObject(0).toString());
+                JSONObject imageJsonObject1 = new JSONObject(imageJsonArray.getJSONObject(1).toString());
+                JSONObject imageJsonObject2 = new JSONObject(imageJsonArray.getJSONObject(2).toString());
+
+                if(jsonObject.get("keyword").toString() == "") {
+                    intent = new Intent(mContext, ResultFailActivity.class);
+                } else {
+                    intent = new Intent(mContext, ResultActivity.class);
+                    intent.putExtra("keyword", jsonObject.get("keyword").toString());
+                    intent.putExtra("analysis", jsonObject.get("analysis").toString());
+                    intent.putExtra("image0", imageJsonObject0.get("img_path").toString());
+                    intent.putExtra("image1", imageJsonObject1.get("img_path").toString());
+                    intent.putExtra("image2", imageJsonObject2.get("img_path").toString());
+                    intent.putExtra("userImage", realPath);
+
+                    mContext.startActivity(intent);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                //Log.d(TAG,"send Avatar fail");
+            }
+            return null;
+        }
+
+    }
+
 }

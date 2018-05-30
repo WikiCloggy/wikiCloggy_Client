@@ -29,7 +29,7 @@ public class DBController extends SQLiteOpenHelper {
     private static final String TABLE_USER_LIST = "UserList";
     private static final String KEY_USER_NAME = "name";
     private static final String KEY_USER_ID = "id";
-    private static final String KEY_USER_IMAGE = "image";
+    private static final String KEY_USER_IMAGE_PATH = "path";
 
     private static final int DATABASE_VERSION = 1;
 
@@ -43,13 +43,14 @@ public class DBController extends SQLiteOpenHelper {
     */
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        Log.d("DATABASE", "onCreate()");
+        //Log.d(TAG, "onCreate()");
         String CREATE_TABLE_USERLIST =
                 "CREATE TABLE "+TABLE_USER_LIST+" ("+
                         KEY_USER_ID + " LONG NOT NULL, "+
                         KEY_USER_NAME+" TEXT NOT NULL, "+
-                        KEY_USER_IMAGE+" BLOB"+
+                        KEY_USER_IMAGE_PATH+" TEXT"+
                         ");";
+        Log.d(TAG, CREATE_TABLE_USERLIST);
         sqLiteDatabase.execSQL(CREATE_TABLE_USERLIST);
     }
 
@@ -62,7 +63,10 @@ public class DBController extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(KEY_USER_ID, user.getId());
         values.put(KEY_USER_NAME, user.getName());
-
+        if(user.getAvatarPath() !=null) {
+            values.put(KEY_USER_IMAGE_PATH, user.getAvatarPath());
+        }
+        Log.d(TAG, values.toString());
         database.insert(TABLE_USER_LIST, null, values);
         database.close();
     }
@@ -76,12 +80,8 @@ public class DBController extends SQLiteOpenHelper {
         while(cursor.moveToNext()) {
             long _id = cursor.getLong(0);
             String _name = cursor.getString(1);
-            byte[] _image = cursor.getBlob(2);
-            if(_image == null) {
-                user = new User(_id, _name);
-            } else {
-                user = new User(_id, _name, getBitmapFromByteArray(_image));
-            }
+            String _image_path = cursor.getString(2);
+            user = new User(_id, _name, _image_path);
         }
         database.close();
         return user;
@@ -89,35 +89,11 @@ public class DBController extends SQLiteOpenHelper {
     public void updateUser(User user) {
         SQLiteDatabase database = getWritableDatabase();
         String MODIFY_USER = null;
-        MODIFY_USER = "UPDATE " + TABLE_USER_LIST + " SET " + KEY_USER_NAME + " = '" + user.getName() + "' WHERE " + KEY_USER_ID + " = " + user.getId();
-        if(!MODIFY_USER.equals(null)) {
+        MODIFY_USER = "UPDATE " + TABLE_USER_LIST + " SET " + KEY_USER_NAME + " = '" + user.getName() +"', "+KEY_USER_IMAGE_PATH+" = '"+user.getAvatarPath()+ "' WHERE " + KEY_USER_ID + " = " + user.getId();
+        Log.d(TAG, MODIFY_USER);
+        if(MODIFY_USER != null) {
             database.execSQL(MODIFY_USER);
         }
     }
-    public void updateProfileImg(User user) {
-        SQLiteDatabase database = getWritableDatabase();
-        //String UPDATE_PROFILE_IMG = "UPDATE "+TABLE_USER_LIST + " SET "+KEY_USER_IMAGE+ " = '"+getByteArrayFromBitmap(user.getBitmapImg())+"' WHERE "+KEY_USER_ID+" = "+user.getId();
-        ContentValues values = new ContentValues();
-        values.put(KEY_USER_IMAGE, getByteArrayFromBitmap(user.getBitmapImg()));
 
-        database.update(TABLE_USER_LIST, values, KEY_USER_ID+" = "+user.getId(), null);
-    }
-
-    /*
-    * SQLite에 저장하기 위해서 Bitmap 이미지를 Byte array로 변환
-    * */
-    public byte[] getByteArrayFromBitmap(Bitmap bitmap) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        byte[] byteData = stream.toByteArray();
-        return byteData;
-    }
-
-    /*
-    * SQLite에 저장했던 Byte array를 다시 Bitmap 이미지로 변환
-    * */
-    public Bitmap getBitmapFromByteArray(byte[] bytes) {
-        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-        return bitmap;
-    }
 }
