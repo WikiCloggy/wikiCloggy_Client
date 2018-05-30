@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -58,14 +59,15 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         nameText = (EditText) findViewById(R.id.nameText);
         saveBtn.setOnClickListener(this);
 
-
+        GetImageFromServer getImageFromServer;
         HttpInterface httpInterface = new HttpInterface();
         //initializiing profile
         if (dbController.getUser(LoginActivity.currentUserID).getName() != null) {
             User _user = dbController.getUser(LoginActivity.currentUserID);
             nameText.setText(_user.getName());
-            bitmap = httpInterface.getBitmapImage(_user.getAvatarPath());
-            profileImageView.setImageBitmap(bitmap);
+            Log.d(TAG, "avatar path is "+_user.getAvatarPath());
+            getImageFromServer = new GetImageFromServer(_user.getAvatarPath());
+            getImageFromServer.execute();
         }
     }
     public String getPath(Uri uri) {
@@ -161,10 +163,15 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         protected Void doInBackground(Void... params) {
             try {
                 response = postAvatar.postFile("avatarFile",realPath);
+                JSONArray jsonArray = new JSONArray(response);
+                JSONObject jsonObject = jsonArray.getJSONObject(0);
+                String image_path = jsonObject.getString("avatar_path");
+                User user = dbController.getUser(LoginActivity.currentUserID);
+                dbController.updateUser(new User(user.getId(), user.getName(), image_path));
             } catch (Exception e) {
                 Log.d(TAG,"send Avatar fail");
             }
-            Log.d(TAG, response);
+
             return null;
         }
     }
@@ -214,6 +221,24 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
                     sendName.execute();
                     Toast.makeText(getApplicationContext(), "저장이 완료되었습니다.", Toast.LENGTH_SHORT).show();
                 }
+            }
+        }
+        class GetImageFromServer extends AsyncTask <Void, Void, Bitmap> {
+            String url;
+            HttpInterface httpInterface;
+            public GetImageFromServer (String url) {
+                this.url = url;
+                httpInterface = new HttpInterface();
+            }
+            @Override
+            protected Bitmap doInBackground(Void... voids) {
+                return httpInterface.getBitmapImage(url);
+            }
+
+            @Override
+            protected void onPostExecute(Bitmap bitmap) {
+                super.onPostExecute(bitmap);
+                profileImageView.setImageBitmap(bitmap);
             }
         }
     }

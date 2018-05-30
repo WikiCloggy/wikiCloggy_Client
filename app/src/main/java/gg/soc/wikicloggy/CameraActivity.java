@@ -114,7 +114,6 @@ public class CameraActivity extends Activity {
         JSONObject jsonObject = new JSONObject();
         public leaveLog(String imgPath) {
             this.imgPath= imgPath;
-
             postJson = new HttpInterface("log");
         }
         @Override
