@@ -22,8 +22,8 @@ import java.net.URL;
 
 public class HttpInterface {
 
-    private String serverUrl = "http://ec2-13-125-187-247.ap-northeast-2.compute.amazonaws.com";
-    //private String serverUrl = "http://172.20.10.2"; // for local test
+//    private String serverUrl = "http://ec2-13-125-187-247.ap-northeast-2.compute.amazonaws.com";
+    private String serverUrl = "http://192.168.11.134"; // for local test
     private String port = ":3000/";
     private String apiPath;
     private String requestURL = null;
@@ -52,13 +52,20 @@ public class HttpInterface {
             case "avatar": // upload file
                 apiPath = "api/user/profile/files/" + user_code;
                 break;
-            case "board":
+            case "getLog": // get user query log
+                apiPath = "api/log/list/" +user_code;
                 break;
             case "log" : // upload photos to analysis
                 apiPath = "api/log/";
                 break;
             case "analysis" :
                 apiPath = "api/log/files/"; // + db id
+                break;
+            case "createPost" :
+                apiPath = "api/board/";
+                break;
+            case "sendPostFile" :
+                apiPath = "api/board/files/"; //+ db id
                 break;
         }
         requestURL = serverUrl + port + apiPath;
@@ -113,6 +120,22 @@ public class HttpInterface {
         RequestHttpURLConnection urlConnection = new RequestHttpURLConnection();
         response = urlConnection.requestHttpPost(this.getUrl(),formdata);
         return response;
+    }
+
+    public JSONObject getJson (){
+        RequestHttpURLConnection urlConnection=null;
+        String response;
+
+        try {
+            urlConnection = new RequestHttpURLConnection();
+            response = urlConnection.requestHttpGet(this.getUrl());
+
+            JSONObject json = new JSONObject(response);
+            return json;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public String postFile(String fileField,String filepath) {

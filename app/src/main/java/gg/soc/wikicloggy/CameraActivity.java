@@ -178,29 +178,37 @@ public class CameraActivity extends Activity {
                 response = postFile.postFile("logFile",realPath);
                 Log.d(TAG,  response.toString()); // here key word return ******************************************************
                 Intent intent;
-                JSONArray jsonArray = new JSONArray(response);
+                //JSONArray jsonArray = new JSONArray(response);
+                JSONObject jsonObject = new JSONObject(response);
+                JSONArray keywordJsonArray = jsonObject.getJSONArray("percentage");
+                JSONArray keyImageJsonArray = jsonObject.getJSONArray("path");
+                String state = jsonObject.getString("state");
 
-                Log.d(TAG, realPath);
+                JSONObject keywordJsonObject0 = keywordJsonArray.getJSONObject(0);
+                JSONObject keywordJsonObject1 = keywordJsonArray.getJSONObject(1);
+                JSONObject keywordJsonObject2 = keywordJsonArray.getJSONObject(2);
 
-                JSONObject jsonObject = jsonArray.getJSONObject(0);
-                JSONArray imageJsonArray = new JSONArray(jsonObject.get("ref").toString());
-                JSONObject imageJsonObject0 = new JSONObject(imageJsonArray.getJSONObject(0).toString());
-                JSONObject imageJsonObject1 = new JSONObject(imageJsonArray.getJSONObject(1).toString());
-                JSONObject imageJsonObject2 = new JSONObject(imageJsonArray.getJSONObject(2).toString());
+                JSONObject imageJsonObject0 = keyImageJsonArray.getJSONObject(0);
+                JSONObject imageJsonObject1 = keyImageJsonArray.getJSONObject(1);
+                JSONObject imageJsonObject2 = keyImageJsonArray.getJSONObject(2);
 
-                if(jsonObject.get("keyword").toString() == "") {
-                    intent = new Intent(CameraActivity.this, ResultFailActivity.class);
-                } else {
+                //if(jsonObject.get("keyword").toString() == "") {
+                //    intent = new Intent(CameraActivity.this, ResultFailActivity.class);
+                //} else {
+                String keywordString = keywordJsonObject0.getString("keyword")+" "+keywordJsonObject0.getString("probability")
+                        +" "+keywordJsonObject1.getString("keyword")+" "+keywordJsonObject1.getString("probability")
+                        +" "+keywordJsonObject2.getString("keyword")+" "+keywordJsonObject2.getString("probability");
+                Log.d(TAG, keywordString);
                     intent = new Intent(CameraActivity.this, ResultActivity.class);
-                    intent.putExtra("keyword", jsonObject.get("keyword").toString());
-                    intent.putExtra("analysis", jsonObject.get("analysis").toString());
+                    intent.putExtra("keyword", keywordString);
+                    intent.putExtra("analysis", state);
                     intent.putExtra("image0", imageJsonObject0.get("img_path").toString());
                     intent.putExtra("image1", imageJsonObject1.get("img_path").toString());
                     intent.putExtra("image2", imageJsonObject2.get("img_path").toString());
                     intent.putExtra("userImage", realPath);
 
                     startActivity(intent);
-                }
+                //}
             } catch (Exception e) {
                 e.printStackTrace();
                 //Log.d(TAG,"send Avatar fail");
