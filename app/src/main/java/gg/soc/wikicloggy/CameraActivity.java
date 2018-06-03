@@ -46,6 +46,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 
 public class CameraActivity extends Activity {
@@ -122,9 +123,12 @@ public class CameraActivity extends Activity {
             try {
                 jsonObject.put("user_code", LoginActivity.currentUserID);
                 response = postJson.postJson(jsonObject);
+                Log.d(TAG, "respose is "+response);
                 JSONObject log = new JSONObject(response);
                 DBid = log.getString("_id");
             } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return DBid;
@@ -180,26 +184,33 @@ public class CameraActivity extends Activity {
                 Intent intent;
                 //JSONArray jsonArray = new JSONArray(response);
                 JSONObject jsonObject = new JSONObject(response);
-                JSONArray keywordJsonArray = jsonObject.getJSONArray("percentage");
-                JSONArray keyImageJsonArray = jsonObject.getJSONArray("path");
-                String state = jsonObject.getString("state");
-
-                JSONObject keywordJsonObject0 = keywordJsonArray.getJSONObject(0);
-                JSONObject keywordJsonObject1 = keywordJsonArray.getJSONObject(1);
-                JSONObject keywordJsonObject2 = keywordJsonArray.getJSONObject(2);
-
-                JSONObject imageJsonObject0 = keyImageJsonArray.getJSONObject(0);
-                JSONObject imageJsonObject1 = keyImageJsonArray.getJSONObject(1);
-                JSONObject imageJsonObject2 = keyImageJsonArray.getJSONObject(2);
-
-                //if(jsonObject.get("keyword").toString() == "") {
-                //    intent = new Intent(CameraActivity.this, ResultFailActivity.class);
-                //} else {
-                String keywordString = keywordJsonObject0.getString("keyword")+" "+keywordJsonObject0.getString("probability")
-                        +" "+keywordJsonObject1.getString("keyword")+" "+keywordJsonObject1.getString("probability")
-                        +" "+keywordJsonObject2.getString("keyword")+" "+keywordJsonObject2.getString("probability");
-                Log.d(TAG, keywordString);
+                String result = jsonObject.getString("result");
+                if(result.equals("fail")) {
+                    intent = new Intent(CameraActivity.this, ResultFailActivity.class);
+                    intent.putExtra("userImage", realPath);
+                    startActivity(intent);
+                } else if(result.equals("success")) {
                     intent = new Intent(CameraActivity.this, ResultActivity.class);
+
+                    JSONArray keywordJsonArray = jsonObject.getJSONArray("percentage");
+                    JSONArray keyImageJsonArray = jsonObject.getJSONArray("path");
+                    String state = jsonObject.getString("state");
+
+                    JSONObject keywordJsonObject0 = keywordJsonArray.getJSONObject(0);
+                    JSONObject keywordJsonObject1 = keywordJsonArray.getJSONObject(1);
+                    JSONObject keywordJsonObject2 = keywordJsonArray.getJSONObject(2);
+
+                    JSONObject imageJsonObject0 = keyImageJsonArray.getJSONObject(0);
+                    JSONObject imageJsonObject1 = keyImageJsonArray.getJSONObject(1);
+                    JSONObject imageJsonObject2 = keyImageJsonArray.getJSONObject(2);
+
+                    //if(jsonObject.get("keyword").toString() == "") {
+                    //    intent = new Intent(CameraActivity.this, ResultFailActivity.class);
+                    //} else {
+                    String keywordString = keywordJsonObject0.getString("keyword")+" "+keywordJsonObject0.getString("probability")
+                            +" "+keywordJsonObject1.getString("keyword")+" "+keywordJsonObject1.getString("probability")
+                            +" "+keywordJsonObject2.getString("keyword")+" "+keywordJsonObject2.getString("probability");
+
                     intent.putExtra("keyword", keywordString);
                     intent.putExtra("analysis", state);
                     intent.putExtra("image0", imageJsonObject0.get("img_path").toString());
@@ -208,7 +219,8 @@ public class CameraActivity extends Activity {
                     intent.putExtra("userImage", realPath);
 
                     startActivity(intent);
-                //}
+
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 //Log.d(TAG,"send Avatar fail");

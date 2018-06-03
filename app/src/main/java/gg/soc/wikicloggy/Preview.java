@@ -121,6 +121,7 @@ public class Preview extends Thread {
         Log.e(TAG, "openCamera X");
     }
 
+    //카메라를 시작하기 위해서 선언
     private TextureView.SurfaceTextureListener mSurfaceTextureListener = new TextureView.SurfaceTextureListener(){
 
         @Override
@@ -150,6 +151,7 @@ public class Preview extends Thread {
         }
     };
 
+    //카메라가 켜진다면 시작하는 콜백함수
     private CameraDevice.StateCallback mStateCallback = new CameraDevice.StateCallback() {
 
         @Override
@@ -174,6 +176,7 @@ public class Preview extends Thread {
 
     };
 
+    //실직적으로 동작하는 부분
     protected void startPreview() {
         // TODO Auto-generated method stub
         if(null == mCameraDevice || !mTextureView.isAvailable() || null == mPreviewSize) {
@@ -187,6 +190,7 @@ public class Preview extends Thread {
         }
 
         texture.setDefaultBufferSize(mPreviewSize.getWidth(), mPreviewSize.getHeight());
+        //카메라 출력이 저장됨
         Surface surface = new Surface(texture);
 
         try {
@@ -284,10 +288,11 @@ public class Preview extends Thread {
             }
             int width = 640;
             int height = 480;
-            if (jpegSizes != null && 0 < jpegSizes.length) {
-                width = jpegSizes[0].getWidth();
-                height = jpegSizes[0].getHeight();
-            }
+            //if (jpegSizes != null && 0 < jpegSizes.length) {
+            //    width = jpegSizes[4].getWidth();
+            //    height = jpegSizes[4].getHeight();
+            //}
+            Log.d(TAG, "width is "+width +" and height is "+height);
 
             ImageReader reader = ImageReader.newInstance(width, height, ImageFormat.JPEG, 1);
             List<Surface> outputSurfaces = new ArrayList<Surface>(2);
@@ -341,8 +346,9 @@ public class Preview extends Thread {
                     out = new BufferedOutputStream(new FileOutputStream(copyFile));
                     bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
 
-                    leaveLog leaveLog = new leaveLog(filePath);
-                    leaveLog.execute();
+                    //저장된 사진을 서버로 전송
+                    //leaveLog leaveLog = new leaveLog(filePath);
+                    //leaveLog.execute();//
 
                 }
             };
@@ -440,29 +446,33 @@ public class Preview extends Thread {
                 response = postFile.postFile("logFile",realPath);
                 Log.d(TAG,  response.toString()); // here key word return ******************************************************
                 Intent intent;
-                JSONArray jsonArray = new JSONArray(response);
+                JSONObject jsonObject = new JSONObject(response);
+                JSONArray keywordJsonArray = jsonObject.getJSONArray("percentage");
+                JSONArray keyImageJsonArray = jsonObject.getJSONArray("path");
+                String state = jsonObject.getString("state");
 
-                Log.d(TAG, realPath);
+                JSONObject keywordJsonObject0 = keywordJsonArray.getJSONObject(0);
+                JSONObject keywordJsonObject1 = keywordJsonArray.getJSONObject(1);
+                JSONObject keywordJsonObject2 = keywordJsonArray.getJSONObject(2);
 
-                JSONObject jsonObject = jsonArray.getJSONObject(0);
-                JSONArray imageJsonArray = new JSONArray(jsonObject.get("ref").toString());
-                JSONObject imageJsonObject0 = new JSONObject(imageJsonArray.getJSONObject(0).toString());
-                JSONObject imageJsonObject1 = new JSONObject(imageJsonArray.getJSONObject(1).toString());
-                JSONObject imageJsonObject2 = new JSONObject(imageJsonArray.getJSONObject(2).toString());
+                JSONObject imageJsonObject0 = keyImageJsonArray.getJSONObject(0);
+                JSONObject imageJsonObject1 = keyImageJsonArray.getJSONObject(1);
+                JSONObject imageJsonObject2 = keyImageJsonArray.getJSONObject(2);
 
-                if(jsonObject.get("keyword").toString() == "") {
-                    intent = new Intent(mContext, ResultFailActivity.class);
-                } else {
-                    intent = new Intent(mContext, ResultActivity.class);
-                    intent.putExtra("keyword", jsonObject.get("keyword").toString());
-                    intent.putExtra("analysis", jsonObject.get("analysis").toString());
-                    intent.putExtra("image0", imageJsonObject0.get("img_path").toString());
-                    intent.putExtra("image1", imageJsonObject1.get("img_path").toString());
-                    intent.putExtra("image2", imageJsonObject2.get("img_path").toString());
-                    intent.putExtra("userImage", realPath);
-
-                    mContext.startActivity(intent);
-                }
+                //if(jsonObject.get("keyword").toString() == "") {
+                //    intent = new Intent(CameraActivity.this, ResultFailActivity.class);
+                //} else {
+                String keywordString = keywordJsonObject0.getString("keyword")+" "+keywordJsonObject0.getString("probability")
+                        +" "+keywordJsonObject1.getString("keyword")+" "+keywordJsonObject1.getString("probability")
+                        +" "+keywordJsonObject2.getString("keyword")+" "+keywordJsonObject2.getString("probability");
+                Log.d(TAG, keywordString);
+                intent = new Intent(mContext, ResultActivity.class);
+                intent.putExtra("keyword", keywordString);
+                intent.putExtra("analysis", state);
+                intent.putExtra("image0", imageJsonObject0.get("img_path").toString());
+                intent.putExtra("image1", imageJsonObject1.get("img_path").toString());
+                intent.putExtra("image2", imageJsonObject2.get("img_path").toString());
+                intent.putExtra("userImage", realPath);
             } catch (Exception e) {
                 e.printStackTrace();
                 //Log.d(TAG,"send Avatar fail");

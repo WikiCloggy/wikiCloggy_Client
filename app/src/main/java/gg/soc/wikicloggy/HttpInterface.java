@@ -21,9 +21,9 @@ import java.net.URL;
  */
 
 public class HttpInterface {
-
-//    private String serverUrl = "http://ec2-13-125-187-247.ap-northeast-2.compute.amazonaws.com";
-    private String serverUrl = "http://192.168.11.134"; // for local test
+    //private String serverUrl = "http://ec2-13-125-187-247.ap-northeast-2.compute.amazonaws.com";
+    private String serverUrl = "http://35.200.17.32";
+    //private String serverUrl = "http://172.20.10.3"; // for local test
     private String port = ":3000/";
     private String apiPath;
     private String requestURL = null;
@@ -176,7 +176,9 @@ public class HttpInterface {
                 }
                 outputStream.writeBytes("\r\n");
                 outputStream.writeBytes("--" + boundary + "--" + "\r\n");
+
                 inputStream = connection.getInputStream();
+
                 int status = connection.getResponseCode();
                 if (status == HttpURLConnection.HTTP_OK) {
                     BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
