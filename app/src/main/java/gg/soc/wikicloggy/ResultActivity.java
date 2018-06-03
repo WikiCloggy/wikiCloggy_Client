@@ -112,7 +112,7 @@ public class ResultActivity extends Activity {
 
         @Override
         protected Bitmap doInBackground(Void... voids) {
-            httpInterface.getBitmapImage(url);
+            //httpInterface.getBitmapImage(url);
             return httpInterface.getBitmapImage(url);
         }
 

@@ -21,6 +21,8 @@ import java.net.URL;
  */
 
 public class HttpInterface {
+    private static final String TAG = "HttpInterface";
+
     //private String serverUrl = "http://ec2-13-125-187-247.ap-northeast-2.compute.amazonaws.com";
     private String serverUrl = "http://35.200.17.32";
     //private String serverUrl = "http://172.20.10.3"; // for local test
@@ -122,7 +124,7 @@ public class HttpInterface {
         return response;
     }
 
-    public JSONObject getJson (){
+    public JSONArray getJson (){
         RequestHttpURLConnection urlConnection=null;
         String response;
 
@@ -130,8 +132,10 @@ public class HttpInterface {
             urlConnection = new RequestHttpURLConnection();
             response = urlConnection.requestHttpGet(this.getUrl());
 
-            JSONObject json = new JSONObject(response);
-            return json;
+            JSONArray jsonArray = new JSONArray(response);
+            //JSONObject json = new JSONObject(response);
+            //Log.d(TAG, json.toString());
+            return jsonArray;
         } catch (Exception e) {
             e.printStackTrace();
         }

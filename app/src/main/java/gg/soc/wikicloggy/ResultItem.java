@@ -10,25 +10,25 @@ import java.util.Date;
  */
 
 public class ResultItem {
-    private Date date;
-    private Bitmap image;
+    private String date;
+    private String image;
     private String keyword;
 
-    public ResultItem(Date date, Bitmap image, String keyword) {
+    public ResultItem(String date, String image, String keyword) {
         this.date = date;
         this.image = image;
         this.keyword = keyword;
     }
-    public ResultItem(Date date, String keyword) {
+    public ResultItem(String date, String image) {
         this.date = date;
-        this.keyword = keyword;
+        this.image = image;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public Bitmap getImage() {
+    public String getImage() {
         return image;
     }
 
@@ -36,11 +36,11 @@ public class ResultItem {
         return keyword;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
-    public void setImage(Bitmap image) {
+    public void setImage(String image) {
         this.image = image;
     }
 

@@ -1,6 +1,8 @@
 package gg.soc.wikicloggy;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,10 +57,32 @@ public class ResultLogAdapter extends BaseAdapter {
             keywordTextView = (TextView) view.findViewById(R.id.resultLogKeywordTextView);
         }
 
-        dateTextView.setText(resultItemArrayList.get(i).getDate().toString());
-        imageView.setImageBitmap(resultItemArrayList.get(i).getImage());
+        dateTextView.setText(resultItemArrayList.get(i).getDate());
+        //imageView.setImageBitmap(resultItemArrayList.get(i).getImage());
         keywordTextView.setText(resultItemArrayList.get(i).getKeyword());
-
+        HttpInterface httpInterface = new HttpInterface();
+        GetImageFromServer getImageFromServer = new GetImageFromServer(resultItemArrayList.get(i).getImage(), imageView);
+        getImageFromServer.execute();
         return view;
+    }
+    class GetImageFromServer extends AsyncTask<Void, Void, Bitmap> {
+        HttpInterface httpInterface;
+        String url;
+        ImageView imageView;
+        public GetImageFromServer (String url, ImageView imageView) {
+            this.url = url;
+            httpInterface = new HttpInterface();
+            this.imageView = imageView;
+        }
+        @Override
+        protected Bitmap doInBackground(Void... voids) {
+            return httpInterface.getBitmapImage(url);
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+            imageView.setImageBitmap(bitmap);
+        }
     }
 }
