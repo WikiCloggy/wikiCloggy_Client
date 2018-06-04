@@ -120,6 +120,7 @@ public class HttpInterface {
     public String postJson(JSONObject formdata) {
         String response;
         RequestHttpURLConnection urlConnection = new RequestHttpURLConnection();
+        Log.d(TAG, this.getUrl());
         response = urlConnection.requestHttpPost(this.getUrl(),formdata);
         return response;
     }

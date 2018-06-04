@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,6 +19,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,7 +33,7 @@ public class CreatePostActivity extends Activity {
     private static final String TAG = "CreatePostActivity";
     private static final int PICK_FROM_ALBUM = 1;
     ImageView userImageView;
-    String userImage;
+    String userImage = null;
 
     Button getImageBtn;
 
@@ -77,8 +81,18 @@ public class CreatePostActivity extends Activity {
             public void onClick(View view) {
                 //Log.d(TAG, titleEditText.getText().toString());
                 //Log.d(TAG, bodyEditText.getText().toString());
-                createPost createPost = new createPost(titleEditText.getText().toString(), bodyEditText.getText().toString(), "image_path");
-                createPost.execute();
+                if(userImage == null) {
+                    Toast.makeText(getApplicationContext(), "사진을 선택해주세요.", Toast.LENGTH_SHORT).show();
+                } else if(titleEditText.getText().toString().equals("")) {
+                    Toast.makeText(CreatePostActivity.this, "제목을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                } else if(bodyEditText.getText().toString().equals("")) {
+                    Toast.makeText(CreatePostActivity.this, "내용을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                } else {
+                    //Log.d(TAG, "edit text check is "+titleEditText.getText().toString()+" "+bodyEditText.getText().toString());
+                    Log.d(TAG, "user image is "+userImage);
+                    createPost createPost = new createPost(titleEditText.getText().toString(), bodyEditText.getText().toString(), userImage);
+                    createPost.execute();
+                }
             }
         });
     }
@@ -107,13 +121,13 @@ public class CreatePostActivity extends Activity {
         return cursor.getString(columnIndex);
     }
 
-    class createPost extends AsyncTask<Void, Void, Void> {
+    class createPost extends AsyncTask<Void, Void, String> {
         HttpInterface httpInterface;
         String title;
         String body;
         String image;
         JSONObject jsonObject;
-        String response;
+        String response = null;
         public createPost (String title, String body, String image) {
             httpInterface = new HttpInterface("createPost");
             jsonObject = new JSONObject();
@@ -121,32 +135,65 @@ public class CreatePostActivity extends Activity {
             this.body = body;
             this.image = image;
         }
+
         @Override
-        protected Void doInBackground(Void... voids) {
+        protected void onPostExecute(String response) {
+            super.onPostExecute(response);
+
+            SendImageFile sendImageFile = new SendImageFile(image, response);
+            sendImageFile.execute();
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
             try {
                 jsonObject.put("title", title);
                 jsonObject.put("content", body);
-                jsonObject.put("author", LoginActivity.currentUserID);
-                //jsonObject.put("createdAt", new Date(System.currentTimeMillis()));
+                jsonObject.put("author", String.valueOf(LoginActivity.currentUserID));
+                jsonObject.put("createdAt", String.valueOf(new Date(System.currentTimeMillis())));
 
                 response = httpInterface.postJson(jsonObject);
-                Log.d(TAG, "response is "+response);
+                JSONObject jsonObject = new JSONObject(response);
+                response = jsonObject.getString("_id");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            return null;
+            return response;
         }
     }
-    class SendImageFile extends AsyncTask<Void, Void, Void> {
+    class SendImageFile extends AsyncTask<Void, Void, String> {
         HttpInterface httpInterface;
         String image;
-        public SendImageFile (String image) {
+        String response;
+        String dbID;
+        JSONObject jsonObject;
+        public SendImageFile (String image, String dbID) {
             httpInterface = new HttpInterface("sendPostFile");
             this.image = image;
+            this.dbID = dbID;
         }
         @Override
-        protected Void doInBackground(Void... voids) {
-            return null;
+        protected String doInBackground(Void... voids) {
+            httpInterface.addToUrl(dbID);
+            Log.d(TAG, httpInterface.getUrl());
+            response  = httpInterface.postFile("postFile", image);
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(String response) {
+            super.onPostExecute(response);
+            try {
+                jsonObject = new JSONObject(response);
+                response = jsonObject.getString("result");
+
+                if(response.equals("ok")) {
+                    Toast.makeText(getApplicationContext(), "게시글이 작성되었습니다.", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
     public void setCustomActionbar() {

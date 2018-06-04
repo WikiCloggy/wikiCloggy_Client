@@ -17,13 +17,16 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class BoardActivity extends Activity {
+    private static final String TAG = "BoardActivity";
+
     ListView listView;
     BoardAdapter boardAdapter;
     ArrayList<Board_item> listItemArrayList;
     Spinner searchSpinner;
 
-    Button createPostBtn;
-    Button checkPostLogBtn;
+    private Button createPostBtn;
+    private Button checkPostLogBtn;
+    private Button searchBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +35,7 @@ public class BoardActivity extends Activity {
 
         createPostBtn = (Button)findViewById(R.id.createPostBtn);
         checkPostLogBtn = (Button)findViewById(R.id.checkPostLogBtn);
+        searchBtn = (Button) findViewById(R.id.boardSearchBtn);
 
         listView = (ListView) findViewById(R.id.boardListView);
         searchSpinner = (Spinner) findViewById(R.id.searchSpinner);
@@ -70,6 +74,14 @@ public class BoardActivity extends Activity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(BoardActivity.this, PostLogActivity.class));
+            }
+        });
+        searchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                startActivity(new Intent(BoardActivity.this, BoardActivity.class));
+                finish();
             }
         });
     }

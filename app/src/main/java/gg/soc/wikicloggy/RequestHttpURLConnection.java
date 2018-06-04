@@ -38,7 +38,6 @@ public class RequestHttpURLConnection {
             String input;
             StringBuffer stringBuffer = new StringBuffer();
 
-
             while((input = reader.readLine())!= null) {
                 stringBuffer.append(input);
             }
