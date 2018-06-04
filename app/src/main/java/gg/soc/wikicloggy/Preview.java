@@ -288,10 +288,10 @@ public class Preview extends Thread {
             }
             int width = 640;
             int height = 480;
-            //if (jpegSizes != null && 0 < jpegSizes.length) {
-            //    width = jpegSizes[4].getWidth();
-            //    height = jpegSizes[4].getHeight();
-            //}
+            if (jpegSizes != null && 0 < jpegSizes.length) {
+                width = jpegSizes[0].getWidth();
+                height = jpegSizes[0].getHeight();
+            }
             Log.d(TAG, "width is "+width +" and height is "+height);
 
             ImageReader reader = ImageReader.newInstance(width, height, ImageFormat.JPEG, 1);
@@ -347,8 +347,8 @@ public class Preview extends Thread {
                     bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
 
                     //저장된 사진을 서버로 전송
-                    //leaveLog leaveLog = new leaveLog(filePath);
-                    //leaveLog.execute();//
+                    leaveLog leaveLog = new leaveLog(filePath);
+                    leaveLog.execute();//
 
                 }
             };
@@ -447,32 +447,43 @@ public class Preview extends Thread {
                 Log.d(TAG,  response.toString()); // here key word return ******************************************************
                 Intent intent;
                 JSONObject jsonObject = new JSONObject(response);
-                JSONArray keywordJsonArray = jsonObject.getJSONArray("percentage");
-                JSONArray keyImageJsonArray = jsonObject.getJSONArray("path");
-                String state = jsonObject.getString("state");
+                String result = jsonObject.getString("result");
+                if(result.equals("fail")) {
+                    intent = new Intent(mContext, ResultFailActivity.class);
+                    intent.putExtra("userImage", realPath);
+                    mContext.startActivity(intent);
+                } else if(result.equals("success")) {
+                    intent = new Intent(mContext, ResultActivity.class);
 
-                JSONObject keywordJsonObject0 = keywordJsonArray.getJSONObject(0);
-                JSONObject keywordJsonObject1 = keywordJsonArray.getJSONObject(1);
-                JSONObject keywordJsonObject2 = keywordJsonArray.getJSONObject(2);
+                    JSONArray keywordJsonArray = jsonObject.getJSONArray("percentage");
+                    JSONArray keyImageJsonArray = jsonObject.getJSONArray("path");
+                    String state = jsonObject.getString("state");
 
-                JSONObject imageJsonObject0 = keyImageJsonArray.getJSONObject(0);
-                JSONObject imageJsonObject1 = keyImageJsonArray.getJSONObject(1);
-                JSONObject imageJsonObject2 = keyImageJsonArray.getJSONObject(2);
+                    JSONObject keywordJsonObject0 = keywordJsonArray.getJSONObject(0);
+                    JSONObject keywordJsonObject1 = keywordJsonArray.getJSONObject(1);
+                    JSONObject keywordJsonObject2 = keywordJsonArray.getJSONObject(2);
 
-                //if(jsonObject.get("keyword").toString() == "") {
-                //    intent = new Intent(CameraActivity.this, ResultFailActivity.class);
-                //} else {
-                String keywordString = keywordJsonObject0.getString("keyword")+" "+keywordJsonObject0.getString("probability")
-                        +" "+keywordJsonObject1.getString("keyword")+" "+keywordJsonObject1.getString("probability")
-                        +" "+keywordJsonObject2.getString("keyword")+" "+keywordJsonObject2.getString("probability");
-                Log.d(TAG, keywordString);
-                intent = new Intent(mContext, ResultActivity.class);
-                intent.putExtra("keyword", keywordString);
-                intent.putExtra("analysis", state);
-                intent.putExtra("image0", imageJsonObject0.get("img_path").toString());
-                intent.putExtra("image1", imageJsonObject1.get("img_path").toString());
-                intent.putExtra("image2", imageJsonObject2.get("img_path").toString());
-                intent.putExtra("userImage", realPath);
+                    JSONObject imageJsonObject0 = keyImageJsonArray.getJSONObject(0);
+                    JSONObject imageJsonObject1 = keyImageJsonArray.getJSONObject(1);
+                    JSONObject imageJsonObject2 = keyImageJsonArray.getJSONObject(2);
+
+                    //if(jsonObject.get("keyword").toString() == "") {
+                    //    intent = new Intent(CameraActivity.this, ResultFailActivity.class);
+                    //} else {
+                    String keywordString = keywordJsonObject0.getString("keyword")+" "+keywordJsonObject0.getString("probability")
+                            +" "+keywordJsonObject1.getString("keyword")+" "+keywordJsonObject1.getString("probability")
+                            +" "+keywordJsonObject2.getString("keyword")+" "+keywordJsonObject2.getString("probability");
+
+                    intent.putExtra("keyword", keywordString);
+                    intent.putExtra("analysis", state);
+                    intent.putExtra("image0", imageJsonObject0.get("img_path").toString());
+                    intent.putExtra("image1", imageJsonObject1.get("img_path").toString());
+                    intent.putExtra("image2", imageJsonObject2.get("img_path").toString());
+                    intent.putExtra("userImage", realPath);
+
+                    mContext.startActivity(intent);
+
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 //Log.d(TAG,"send Avatar fail");

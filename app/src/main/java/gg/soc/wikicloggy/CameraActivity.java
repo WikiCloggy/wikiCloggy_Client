@@ -324,7 +324,7 @@ public class CameraActivity extends Activity {
     }
     //actionbar customizing
 
-    private void setCustomActionbar() {
+    public void setCustomActionbar() {
         ActionBar actionBar = getActionBar();
 
         //for custom actionbar, set customEnabled true
