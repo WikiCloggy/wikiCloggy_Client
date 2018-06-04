@@ -64,7 +64,7 @@ public class BoardAdapter extends BaseAdapter{
         nameTextView.setText(listItemArrayList.get(i).getName());
         titleTextView.setText(listItemArrayList.get(i).getTitle());
         dateTextView.setText(listItemArrayList.get(i).getDate());
-        previewImageView.setImageResource(listItemArrayList.get(i).getProfile_image());
+        //previewImageView.setImageResource(listItemArrayList.get(i).getProfile_image());
 
         return view;
     }

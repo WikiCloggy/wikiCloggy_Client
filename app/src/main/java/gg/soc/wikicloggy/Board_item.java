@@ -7,12 +7,12 @@ import java.util.Date;
  */
 
 public class Board_item {
-    private int profile_image;
+    private String profile_image;
     private String title;
     private String name;
     private String date;
 
-    public Board_item(int profile_image, String title, String name, String date) {
+    public Board_item(String profile_image, String title, String name, String date) {
         this.profile_image = profile_image;
         this.title = title;
         this.name = name;
@@ -35,7 +35,7 @@ public class Board_item {
         this.date = date;
     }
 
-    public int getProfile_image() {
+    public String getProfile_image() {
         return profile_image;
     }
 
@@ -43,7 +43,7 @@ public class Board_item {
         return title;
     }
 
-    public void setProfile_image(int profile_image) {
+    public void setProfile_image(String profile_image) {
         this.profile_image = profile_image;
     }
 

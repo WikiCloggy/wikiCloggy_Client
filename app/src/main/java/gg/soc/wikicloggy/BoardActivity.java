@@ -3,15 +3,23 @@ package gg.soc.wikicloggy;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,6 +36,11 @@ public class BoardActivity extends Activity {
     private Button checkPostLogBtn;
     private Button searchBtn;
 
+    private boolean lastItemVisibleFlag = false; //리스트 스크롤이 마지막 셀로 이동했는지 확인할 변수
+    private int page = 0;                           //페이징 변수, 초기값은 0
+    private final int OFFSET = 5;                  //한페이지마다 로드할 데이터 갯수
+    private ProgressBar progressBar;
+    private boolean mLockListView = false;        //데이터가 중복되지 않게 방지하는 변수
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,13 +57,8 @@ public class BoardActivity extends Activity {
 
         listItemArrayList = new ArrayList<Board_item>();
 
-        listItemArrayList.add(new Board_item(R.drawable.main_cloggy, "보라돌이", "현정", new Date(System.currentTimeMillis()).toString()));
-        listItemArrayList.add(new Board_item(R.drawable.main_cloggy, "보라돌이", "현정", new Date(System.currentTimeMillis()).toString()));
-        listItemArrayList.add(new Board_item(R.drawable.main_cloggy, "보라돌이", "현정", new Date(System.currentTimeMillis()).toString()));
-        listItemArrayList.add(new Board_item(R.drawable.main_cloggy, "보라돌이", "현정", new Date(System.currentTimeMillis()).toString()));
-        listItemArrayList.add(new Board_item(R.drawable.main_cloggy, "보라돌이", "현정", new Date(System.currentTimeMillis()).toString()));
-        listItemArrayList.add(new Board_item(R.drawable.main_cloggy, "보라돌이", "현정", new Date(System.currentTimeMillis()).toString()));
-        listItemArrayList.add(new Board_item(R.drawable.main_cloggy, "보라돌이", "현정", new Date(System.currentTimeMillis()).toString()));
+        GetUserLogTask getUserLogTask = new GetUserLogTask(page);
+        getUserLogTask.execute();
 
         boardAdapter = new BoardAdapter(BoardActivity.this, listItemArrayList);
         listView.setAdapter(boardAdapter);
@@ -84,5 +92,59 @@ public class BoardActivity extends Activity {
                 finish();
             }
         });
+    }
+
+    class GetUserLogTask extends AsyncTask<Void, Void, JSONArray> {
+        HttpInterface httpInterface;
+        int page;
+        public GetUserLogTask(int page) {
+            httpInterface = new HttpInterface("getBoardList");
+            this.page = page;
+        }
+
+        @Override
+        protected JSONArray doInBackground(Void... voids) {
+            httpInterface.addToUrl(String.valueOf(page));
+            return httpInterface.getJson();
+        }
+
+        @Override
+        protected void onPostExecute(JSONArray jsonArray) {
+            super.onPostExecute(jsonArray);
+            Log.d(TAG, jsonArray.toString());
+            getItem(jsonArray);
+        }
+    }
+    private void getItem(JSONArray jsonArray) {
+        mLockListView = true;
+        JSONObject jsonObject;
+        String title = null;
+        String date = null;
+        String author = null;
+        String image = null;
+        for(int i=0; i< OFFSET; i++) {
+            try {
+                jsonObject = jsonArray.getJSONObject(i);
+                title = jsonObject.getString("title");
+                image = jsonObject.getString("img_path");
+                author = jsonObject.getString("author");
+                date = jsonObject.getString("createdAt");
+                if(title != null && image != null && author != null && date != null) {
+                    Log.d(TAG, "title is "+title+" image is "+image+" author is "+author+" date is "+date);
+                    listItemArrayList.add(new Board_item(image, title, author, date));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                page++;
+                boardAdapter.notifyDataSetChanged();
+                //progressBar.setVisibility(View.GONE);
+                mLockListView = false;
+            }
+        }, 1000);
     }
 }

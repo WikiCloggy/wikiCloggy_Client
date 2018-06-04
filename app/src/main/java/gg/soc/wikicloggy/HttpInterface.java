@@ -69,6 +69,9 @@ public class HttpInterface {
             case "sendPostFile" :
                 apiPath = "api/board/files/"; //+ db id
                 break;
+            case "getBoardList":
+                apiPath = "api/board/list/";
+                break;
         }
         requestURL = serverUrl + port + apiPath;
         Log.d("hyeon", requestURL);
@@ -141,6 +144,23 @@ public class HttpInterface {
             e.printStackTrace();
         }
         return null;
+    }
+    public JSONObject getJsonObject() {
+        RequestHttpURLConnection urlConnection=null;
+        String response;
+
+        try {
+            urlConnection = new RequestHttpURLConnection();
+            response = urlConnection.requestHttpGet(this.getUrl());
+
+            JSONObject json = new JSONObject(response);
+            //Log.d(TAG, json.toString());
+            return json;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+
     }
 
     public String postFile(String fileField,String filepath) {
