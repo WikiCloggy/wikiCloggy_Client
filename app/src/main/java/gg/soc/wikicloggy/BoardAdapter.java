@@ -1,6 +1,9 @@
 package gg.soc.wikicloggy;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.TextureView;
 import android.view.View;
@@ -19,6 +22,8 @@ import java.util.ArrayList;
  */
 
 public class BoardAdapter extends BaseAdapter{
+    private static final String TAG = "BoardAdapter";
+
     Context context;
     ArrayList<Board_item> listItemArrayList;
 
@@ -64,8 +69,33 @@ public class BoardAdapter extends BaseAdapter{
         nameTextView.setText(listItemArrayList.get(i).getName());
         titleTextView.setText(listItemArrayList.get(i).getTitle());
         dateTextView.setText(listItemArrayList.get(i).getDate());
-        //previewImageView.setImageResource(listItemArrayList.get(i).getProfile_image());
+        previewImageView.setImageResource(R.drawable.main_cloggy);
+        Log.d(TAG, listItemArrayList.get(i).getProfile_image());
+        GetImageFromServer getImageFromServer = new GetImageFromServer(listItemArrayList.get(i).getProfile_image(), previewImageView);
+        getImageFromServer.execute();
 
         return view;
+    }
+    class GetImageFromServer extends AsyncTask<Void, Void, Bitmap> {
+        HttpInterface httpInterface;
+        String url;
+        ImageView imageView;
+
+        public GetImageFromServer(String url, ImageView imageView) {
+            this.url = url;
+            httpInterface = new HttpInterface();
+            this.imageView = imageView;
+        }
+
+        @Override
+        protected Bitmap doInBackground(Void... voids) {
+            return httpInterface.getBitmapImage(url);
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+            imageView.setImageBitmap(bitmap);
+        }
     }
 }

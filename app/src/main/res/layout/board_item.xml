@@ -33,7 +33,7 @@
     <ImageView
         android:id="@+id/previewImageView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:layout_weight="1"
         app:srcCompat="@drawable/main_cloggy" />
 

@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -24,7 +25,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class BoardActivity extends Activity {
+public class BoardActivity extends Activity implements AbsListView.OnScrollListener{
     private static final String TAG = "BoardActivity";
 
     ListView listView;
@@ -57,8 +58,11 @@ public class BoardActivity extends Activity {
 
         listItemArrayList = new ArrayList<Board_item>();
 
+        listView.setOnScrollListener(this);
+
         GetUserLogTask getUserLogTask = new GetUserLogTask(page);
         getUserLogTask.execute();
+
 
         boardAdapter = new BoardAdapter(BoardActivity.this, listItemArrayList);
         listView.setAdapter(boardAdapter);
@@ -92,6 +96,21 @@ public class BoardActivity extends Activity {
                 finish();
             }
         });
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView absListView, int i) {
+        if(i == AbsListView.OnScrollListener.SCROLL_STATE_IDLE && lastItemVisibleFlag && mLockListView == false) {
+            //progressBar.setVisibility(View.VISIBLE);
+            GetUserLogTask getUserLogTask = new GetUserLogTask(page);
+            getUserLogTask.execute();
+        }
+
+    }
+
+    @Override
+    public void onScroll(AbsListView absListView, int i, int i1, int i2) {
+        lastItemVisibleFlag = (i2 > 0 )&&(i+i1>=i2);
     }
 
     class GetUserLogTask extends AsyncTask<Void, Void, JSONArray> {
