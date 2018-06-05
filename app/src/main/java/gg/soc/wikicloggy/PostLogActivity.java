@@ -31,7 +31,6 @@ public class PostLogActivity extends Activity {
         //itemArrayList.add(new Board_item(R.drawable.main_cloggy, "뚜비", "현정", String.valueOf(new Date(System.currentTimeMillis()))));
 
 
-
         boardAdapter = new BoardAdapter(PostLogActivity.this, itemArrayList);
         listView.setAdapter(boardAdapter);
     }
