@@ -70,6 +70,7 @@ public class BoardAdapter extends BaseAdapter{
         titleTextView.setText(listItemArrayList.get(i).getTitle());
         dateTextView.setText(listItemArrayList.get(i).getDate());
         previewImageView.setImageResource(R.drawable.main_cloggy);
+
         Log.d(TAG, listItemArrayList.get(i).getProfile_image());
         GetImageFromServer getImageFromServer = new GetImageFromServer(listItemArrayList.get(i).getProfile_image(), previewImageView);
         getImageFromServer.execute();
@@ -95,6 +96,7 @@ public class BoardAdapter extends BaseAdapter{
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             super.onPostExecute(bitmap);
+            Log.d(TAG, "bitmap is "+bitmap);
             imageView.setImageBitmap(bitmap);
         }
     }

@@ -72,6 +72,9 @@ public class HttpInterface {
             case "getBoardList":
                 apiPath = "api/board/list/";
                 break;
+            case "getBoardLog":
+                apiPath = "api/board/log/"; //_user id
+                break;
         }
         requestURL = serverUrl + port + apiPath;
         Log.d("hyeon", requestURL);
