@@ -108,6 +108,7 @@ public class CreatePostActivity extends Activity {
                 File file = new File(userImage);
                 if(file.exists()) {
                     Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+                    Log.d(TAG, "bitmap is "+bitmap);
                     userImageView.setImageBitmap(bitmap);
                 }
         }

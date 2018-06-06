@@ -109,11 +109,13 @@ public class Preview extends Thread {
             mPreviewSize = map.getOutputSizes(SurfaceTexture.class)[0];
 
             int permissionCamera = ContextCompat.checkSelfPermission(mContext, Manifest.permission.CAMERA);
+
             if(permissionCamera == PackageManager.PERMISSION_DENIED) {
                 ActivityCompat.requestPermissions((Activity) mContext, new String[]{Manifest.permission.CAMERA}, CameraActivity.REQUEST_CAMERA);
             } else {
                 manager.openCamera(cameraId, mStateCallback, null);
             }
+
         } catch (CameraAccessException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

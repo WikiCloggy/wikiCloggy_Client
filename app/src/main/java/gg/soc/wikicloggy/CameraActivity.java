@@ -17,7 +17,9 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManagerNonConfig;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Gravity;
@@ -51,6 +53,7 @@ import java.io.InputStream;
 
 public class CameraActivity extends Activity {
 
+    private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 101;
     private TextureView mCameraTextureView;
     private Preview mPreview;
 
@@ -104,6 +107,25 @@ public class CameraActivity extends Activity {
                 startActivityForResult(intent, PICK_FROM_ALBUM);
             }
         });
+
+        try {
+            if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED) {
+                if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+
+                }else {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+                }
+            }
+            if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED) {
+                if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+                }else {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
     public class leaveLog extends AsyncTask<String, String, String> {

@@ -135,6 +135,8 @@ public class BoardActivity extends Activity implements AbsListView.OnScrollListe
         }
     }
     private void getItem(JSONArray jsonArray) {
+        Log.d(TAG, "page is "+page);
+        Log.d(TAG, "json array is "+jsonArray.toString());
         mLockListView = true;
         JSONObject jsonObject;
         String title = null;
