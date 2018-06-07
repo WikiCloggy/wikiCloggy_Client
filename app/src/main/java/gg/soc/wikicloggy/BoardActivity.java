@@ -70,7 +70,9 @@ public class BoardActivity extends Activity implements AbsListView.OnScrollListe
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(BoardActivity.this, PostActivity.class);
-                intent.putExtra("id", String.valueOf(i));
+                //Log.d(TAG, "post id is "+listItemArrayList.get(i).getPostId());
+                //Log.d(TAG, "image is "+listItemArrayList.get(i).getProfile_image());
+                intent.putExtra("id", listItemArrayList.get(i).getPostId());
                 startActivity(intent);
             }
         });
@@ -143,16 +145,18 @@ public class BoardActivity extends Activity implements AbsListView.OnScrollListe
         String date = null;
         String author = null;
         String image = null;
+        String postId = null;
         for(int i=0; i< OFFSET; i++) {
             try {
                 jsonObject = jsonArray.getJSONObject(i);
+                postId = jsonObject.getString("_id");
                 title = jsonObject.getString("title");
                 image = jsonObject.getString("img_path");
                 author = jsonObject.getString("author");
                 date = jsonObject.getString("createdAt");
                 if(title != null && image != null && author != null && date != null) {
-                    Log.d(TAG, "title is "+title+" image is "+image+" author is "+author+" date is "+date);
-                    listItemArrayList.add(new Board_item(image, title, author, date));
+                    Log.d(TAG, "title is "+title+" image is "+image+" author is "+author+" date is "+date+" postId is "+postId);
+                    listItemArrayList.add(new Board_item(image, title, author, date, postId));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

@@ -11,12 +11,20 @@ public class Board_item {
     private String title;
     private String name;
     private String date;
+    private String postId;
 
     public Board_item(String profile_image, String title, String name, String date) {
         this.profile_image = profile_image;
         this.title = title;
         this.name = name;
         this.date = date;
+    }
+    public Board_item(String profile_image, String title, String name, String date, String postId) {
+        this.profile_image = profile_image;
+        this.title = title;
+        this.name = name;
+        this.date = date;
+        this.postId = postId;
     }
 
     public String getName() {
@@ -49,5 +57,13 @@ public class Board_item {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getPostId() {
+        return postId;
+    }
+
+    public void setPostId(String postId) {
+        this.postId = postId;
     }
 }
