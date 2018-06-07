@@ -105,6 +105,7 @@ public class PostActivity extends Activity {
             String author;
             String createdAt;
             String img_path;
+            JSONArray commentJSONArray;
 
             try {
                 JSONObject jsonObject = jsonArray.getJSONObject(0);
@@ -112,6 +113,8 @@ public class PostActivity extends Activity {
                 content = jsonObject.getString("content");
                 author = jsonObject.getString("author");
                 createdAt = jsonObject.getString("createdAt");
+                commentJSONArray = jsonObject.getJSONArray("comments");
+
                 if(jsonObject.isNull("img_path")) {
                     Log.d(TAG, "img_path is null");
                     imageView.setImageDrawable(drawable);
@@ -126,7 +129,6 @@ public class PostActivity extends Activity {
                 bodyTextView.setText(content);
                 nameTextView.setText(author);
                 dateTextView.setText(createdAt);
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }

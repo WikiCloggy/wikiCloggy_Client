@@ -53,7 +53,7 @@ public class BoardActivity extends Activity implements AbsListView.OnScrollListe
 
         listView = (ListView) findViewById(R.id.boardListView);
         searchSpinner = (Spinner) findViewById(R.id.searchSpinner);
-        ArrayAdapter searchSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.searchTarget, android.R.layout.simple_spinner_item);
+        ArrayAdapter searchSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.searchTarget, android.R.layout.simple_spinner_dropdown_item);
         searchSpinner.setAdapter(searchSpinnerAdapter);
 
         listItemArrayList = new ArrayList<Board_item>();

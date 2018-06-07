@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name = "targetKeyword">
+        <item>기분좋음</item>
+        <item>공격적인상태</item>
+        <item>췌장염</item>
+        <item>긴장상태</item>
+        <item>항문낭염</item>
+        <item>잘모르겠음</item>
+        <item>기타</item>
+    </string-array>
+</resources>

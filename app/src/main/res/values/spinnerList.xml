@@ -3,6 +3,6 @@
     <string-array name = "searchTarget">
         <item>전체</item>
         <item>제목</item>
-        <item>키워드</item>
+        <item>작성자</item>
     </string-array>
 </resources>
