@@ -108,6 +108,12 @@ public class PostActivity extends Activity {
             String createdAt;
             String img_path;
             JSONArray commentJSONArray;
+            JSONObject commentJSONObject;
+            String commentName;
+            String commentDate;
+            String commentKeyword;
+            boolean commentAdopted;
+            String commentBody;
 
             try {
                 JSONObject jsonObject = jsonArray.getJSONObject(0);
@@ -115,7 +121,24 @@ public class PostActivity extends Activity {
                 content = jsonObject.getString("content");
                 author = jsonObject.getString("author_name");
                 createdAt = jsonObject.getString("createdAt");
-                commentJSONArray = jsonObject.getJSONArray("comments");
+
+                if(!jsonObject.isNull("comments")) {
+                    commentJSONArray = jsonObject.getJSONArray("comments");
+                    Log.d(TAG, "length is "+commentJSONArray.length());
+
+                    for(int i = 0; i< commentJSONArray.length(); i++) {
+                        commentJSONObject = commentJSONArray.getJSONObject(i);
+                        if(!commentJSONObject.isNull("name") && !commentJSONObject.isNull("body") && !commentJSONObject.isNull("adopted") && !commentJSONObject.isNull("createdAt") && !commentJSONObject.isNull("keyword")) {
+                            commentName = commentJSONObject.getString("name");
+                            commentBody = commentJSONObject.getString("body");
+                            commentAdopted = commentJSONObject.getBoolean("adopted");
+                            commentDate = commentJSONObject.getString("createdAt");
+                            commentKeyword = commentJSONObject.getString("keyword");
+
+                            commentItemArrayList.add(new commentItem(commentName, commentBody, commentAdopted, commentKeyword));
+                        }
+                    }
+                }
 
                 if(jsonObject.isNull("img_path")) {
                     Log.d(TAG, "img_path is null");
