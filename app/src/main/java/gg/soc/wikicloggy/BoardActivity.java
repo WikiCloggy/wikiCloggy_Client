@@ -13,6 +13,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -37,11 +38,17 @@ public class BoardActivity extends Activity implements AbsListView.OnScrollListe
     private Button checkPostLogBtn;
     private Button searchBtn;
 
+    private EditText searchEditText;
+    private int SEARCH_TOTAL = 0;
+    private int SEARCH_AUTHOR = 1;
+    private int SEARCH_TITLE = 2;
+
     private boolean lastItemVisibleFlag = false; //리스트 스크롤이 마지막 셀로 이동했는지 확인할 변수
     private int page = 0;                           //페이징 변수, 초기값은 0
     private final int OFFSET = 5;                  //한페이지마다 로드할 데이터 갯수
     private ProgressBar progressBar;
     private boolean mLockListView = false;        //데이터가 중복되지 않게 방지하는 변수
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +57,8 @@ public class BoardActivity extends Activity implements AbsListView.OnScrollListe
         createPostBtn = (Button)findViewById(R.id.createPostBtn);
         checkPostLogBtn = (Button)findViewById(R.id.checkPostLogBtn);
         searchBtn = (Button) findViewById(R.id.boardSearchBtn);
+
+        searchEditText = (EditText) findViewById(R.id.searchEditText);
 
         listView = (ListView) findViewById(R.id.boardListView);
         searchSpinner = (Spinner) findViewById(R.id.searchSpinner);
@@ -94,8 +103,16 @@ public class BoardActivity extends Activity implements AbsListView.OnScrollListe
             @Override
             public void onClick(View view) {
 
-                startActivity(new Intent(BoardActivity.this, BoardActivity.class));
-                finish();
+                Toast.makeText(getApplicationContext(), "검색버튼 누름", Toast.LENGTH_SHORT).show();
+                if(searchEditText.getText().toString().equals("")) {
+                    Toast.makeText(getApplicationContext(), "검색어를 입력해주세요", Toast.LENGTH_SHORT).show();
+                } else {
+                    GetSearchPost getSearchPost = new GetSearchPost(String.valueOf(searchSpinner.getSelectedItemId()));
+                    getSearchPost.execute();
+                    //Toast.makeText(getApplicationContext(), "number is "+searchSpinner.getSelectedItemId(), Toast.LENGTH_SHORT).show();
+                }
+                //startActivity(new Intent(BoardActivity.this, BoardActivity.class));
+                //finish();
             }
         });
     }
@@ -172,5 +189,21 @@ public class BoardActivity extends Activity implements AbsListView.OnScrollListe
                 mLockListView = false;
             }
         }, 1000);
+    }
+    class GetSearchPost extends AsyncTask<Void, Void, Void> {
+        HttpInterface httpInterface;
+
+        public GetSearchPost(String searchType) {
+            httpInterface = new HttpInterface("postSearch");
+            httpInterface.addToUrl(searchType);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            Log.d(TAG, httpInterface.getUrl());
+            //httpInterface.get
+            return null;
+
+        }
     }
 }

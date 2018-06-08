@@ -81,6 +81,9 @@ public class HttpInterface {
             case "postComment":
                 apiPath = "api/board/comments/"; //+dbid
                 break;
+            case "postSearch":
+                apiPath = "api/board/search/"; //+type 0 전체, 1 작성자, 2 제목
+                break;
         }
         requestURL = serverUrl + port + apiPath;
         Log.d("hyeon", requestURL);
