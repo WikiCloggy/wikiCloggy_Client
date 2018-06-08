@@ -74,7 +74,7 @@ public class CreateCommentActivity extends Activity {
         String postID;
         JSONObject jsonObject = new JSONObject();
         String date;
-        String result;
+        String result = null;
         public PostCommentToServer (String postID, String date) {
             httpInterface = new HttpInterface("postComment");
             this.postID = postID;
@@ -84,16 +84,19 @@ public class CreateCommentActivity extends Activity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            Log.d(TAG, jsonObject.toString());
-            result = httpInterface.postJson(jsonObject);
-            Log.d(TAG, "result is "+result);
-            try {
-                JSONObject resultJSONObeject = new JSONObject(result);
-                result = resultJSONObeject.getString("result");
-            } catch (JSONException e) {
-                e.printStackTrace();
+            Log.d(TAG, jsonObject.toString() + " length is "+jsonObject.length());
+            if(jsonObject.length() == 0) {
+                //필요한 내용이 부족한 경우
+            } else {
+                result = httpInterface.postJson(jsonObject);
+                Log.d(TAG, "result is " + result);
+                try {
+                    JSONObject resultJSONObeject = new JSONObject(result);
+                    result = resultJSONObeject.getString("result");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
-
             return null;
         }
 
@@ -103,24 +106,37 @@ public class CreateCommentActivity extends Activity {
             DBController dbController = new DBController(getApplicationContext());
             String name = dbController.getUser(LoginActivity.currentUserID).getName();
             String body = bodyEditText.getText().toString();
-            String keyword = keywordSpinner.getSelectedItem().toString();
-            try {
-                jsonObject.put("commenter", LoginActivity.currentUserID);
-                jsonObject.put("name", name);
-                jsonObject.put("body", body);
-                jsonObject.put("adopted", false);
-                jsonObject.put("keyword", keyword);
-                jsonObject.put("createdAt", date);
+            String keyword = null;
+            if(keywordSpinner.getSelectedItem().toString().equals("기타")) {
+                keyword = etcEditText.getText().toString();
+            } else {
+                keyword = keywordSpinner.getSelectedItem().toString();
+            }
+            if(keywordSpinner.getSelectedItem().toString().equals("기타") && etcEditText.getText().toString().equals("")) {
+                Toast.makeText(getApplicationContext(), "내용을 입력해주세요", Toast.LENGTH_SHORT).show();
+            } else if (body.equals("")) {
+                Toast.makeText(getApplicationContext(), "내용을 입력해주세요.", Toast.LENGTH_SHORT).show();
+            } else {
+                try {
+                    jsonObject.put("commenter", LoginActivity.currentUserID);
+                    jsonObject.put("name", name);
+                    jsonObject.put("body", body);
+                    jsonObject.put("adopted", false);
+                    jsonObject.put("keyword", keyword);
+                    jsonObject.put("createdAt", date);
 
-            } catch (JSONException e) {
-                e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            if(result.equals("ok")) {
+            if(result == null) {
+
+            } else if(result.equals("ok")) {
                 Toast.makeText(CreateCommentActivity.this, "댓글 작성이 완료되었습니다.", Toast.LENGTH_SHORT).show();
                 finish();
             }

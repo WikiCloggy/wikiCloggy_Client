@@ -149,10 +149,11 @@ public class BoardActivity extends Activity implements AbsListView.OnScrollListe
         for(int i=0; i< OFFSET; i++) {
             try {
                 jsonObject = jsonArray.getJSONObject(i);
+
                 postId = jsonObject.getString("_id");
                 title = jsonObject.getString("title");
                 image = jsonObject.getString("img_path");
-                author = jsonObject.getString("author");
+                author = jsonObject.getString("author_name");
                 date = jsonObject.getString("createdAt");
                 if(title != null && image != null && author != null && date != null) {
                     Log.d(TAG, "title is "+title+" image is "+image+" author is "+author+" date is "+date+" postId is "+postId);

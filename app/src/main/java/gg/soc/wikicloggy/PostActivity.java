@@ -101,7 +101,7 @@ public class PostActivity extends Activity {
         @Override
         protected void onPostExecute(JSONArray jsonArray) {
             super.onPostExecute(jsonArray);
-            //Log.d(TAG, jsonArray.toString());
+            Log.d(TAG, jsonArray.toString());
             String title;
             String content;
             String author;
@@ -113,7 +113,7 @@ public class PostActivity extends Activity {
                 JSONObject jsonObject = jsonArray.getJSONObject(0);
                 title = jsonObject.getString("title");
                 content = jsonObject.getString("content");
-                author = jsonObject.getString("author");
+                author = jsonObject.getString("author_name");
                 createdAt = jsonObject.getString("createdAt");
                 commentJSONArray = jsonObject.getJSONArray("comments");
 
