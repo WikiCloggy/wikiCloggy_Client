@@ -68,7 +68,9 @@ public class PostActivity extends Activity {
         writeCommentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(PostActivity.this, CreateCommentActivity.class));
+                Intent commentIntent = new Intent(PostActivity.this, CreateCommentActivity.class);
+                commentIntent.putExtra("postID", postID);
+                startActivity(commentIntent);
             }
         });
 

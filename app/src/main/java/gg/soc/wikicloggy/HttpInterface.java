@@ -78,6 +78,9 @@ public class HttpInterface {
             case "getPostDetails":
                 apiPath = "api/board/details/";
                 break;
+            case "postComment":
+                apiPath = "api/board/comments/"; //+dbid
+                break;
         }
         requestURL = serverUrl + port + apiPath;
         Log.d("hyeon", requestURL);
