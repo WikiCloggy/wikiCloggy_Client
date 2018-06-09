@@ -23,6 +23,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -103,7 +104,6 @@ public class BoardActivity extends Activity implements AbsListView.OnScrollListe
             @Override
             public void onClick(View view) {
 
-                Toast.makeText(getApplicationContext(), "검색버튼 누름", Toast.LENGTH_SHORT).show();
                 if(searchEditText.getText().toString().equals("")) {
                     Toast.makeText(getApplicationContext(), "검색어를 입력해주세요", Toast.LENGTH_SHORT).show();
                 } else {
@@ -163,10 +163,9 @@ public class BoardActivity extends Activity implements AbsListView.OnScrollListe
         String author = null;
         String image = null;
         String postId = null;
-        for(int i=0; i< OFFSET; i++) {
+        for(int i=0; i< jsonArray.length(); i++) {
             try {
                 jsonObject = jsonArray.getJSONObject(i);
-
                 postId = jsonObject.getString("_id");
                 title = jsonObject.getString("title");
                 image = jsonObject.getString("img_path");
@@ -190,19 +189,48 @@ public class BoardActivity extends Activity implements AbsListView.OnScrollListe
             }
         }, 1000);
     }
-    class GetSearchPost extends AsyncTask<Void, Void, Void> {
+    class GetSearchPost extends AsyncTask<Void, Void, String> {
         HttpInterface httpInterface;
+        String query;
+        String result;
+        JSONObject jsonObject = new JSONObject();
 
         public GetSearchPost(String searchType) {
             httpInterface = new HttpInterface("postSearch");
             httpInterface.addToUrl(searchType);
+            query = searchEditText.getText().toString();
+            if(!query.equals("")) {
+                try {
+                    jsonObject.put("query", searchEditText.getText().toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         @Override
-        protected Void doInBackground(Void... voids) {
-            Log.d(TAG, httpInterface.getUrl());
-            //httpInterface.get
-            return null;
+        protected String doInBackground(Void... voids) {
+            result = httpInterface.postJson(jsonObject);
+            return result;
+
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            try {
+                JSONArray jsonArray = new JSONArray(result);
+                listItemArrayList.clear();
+                boardAdapter.notifyDataSetChanged();
+                if(jsonArray.length() == 0) {
+                    //검색결과 내용이 없을 경우
+                } else {
+                    getItem(jsonArray);
+                }
+                Log.d(TAG, jsonArray.length()+"");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
         }
     }
