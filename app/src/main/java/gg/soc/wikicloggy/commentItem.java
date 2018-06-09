@@ -9,12 +9,14 @@ public class commentItem {
     private String body;
     private boolean adopted = false;
     private String keywords;
+    private String commentID;
 
-    public commentItem(String name, String body, boolean adopted, String keywords) {
+    public commentItem(String name, String body, boolean adopted, String keywords, String commentID) {
         this.name = name;
         this.body = body;
         this.adopted = adopted;
         this.keywords = keywords;
+        this.commentID = commentID;
     }
 
     public String getName() {
@@ -47,5 +49,13 @@ public class commentItem {
 
     public void setKeywords(String keywords) {
         this.keywords = keywords;
+    }
+
+    public String getCommentID() {
+        return commentID;
+    }
+
+    public void setCommentID(String commentID) {
+        this.commentID = commentID;
     }
 }

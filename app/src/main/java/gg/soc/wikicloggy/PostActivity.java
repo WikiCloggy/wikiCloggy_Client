@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -40,6 +41,9 @@ public class PostActivity extends Activity {
     private TextView bodyTextView;
     private TextView nameTextView;
 
+    private String author;
+
+    private ImageView boneImageView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +64,7 @@ public class PostActivity extends Activity {
         bodyTextView = (TextView) findViewById(R.id.postBodyTextView);
         nameTextView = (TextView) findViewById(R.id.postNameTextView);
 
+        boneImageView = (ImageView) findViewById(R.id.commentItemBoneImageView);
         //String id = intent.getStringExtra("id"); 인텐트로 스트링 받아오는 법
 
         GetDetailPost getDetailPost = new GetDetailPost(postID);
@@ -77,13 +82,28 @@ public class PostActivity extends Activity {
         commentListView = (ListView) findViewById(R.id.postCommentListView);
         commentItemArrayList = new ArrayList<commentItem>();
 
-        //commentItemArrayList.add(new commentItem("현정", "저희 강아지도 그래서 병원 찾아갔었는데 항문낭염이라고 하더라구요! ㅠ.ㅠ 병원 한 번 데려가 보세요!", true, "항문낭염"));
-        //commentItemArrayList.add(new commentItem("영기", "맞아요! 항문낭염! 위험할 수 있으니 병원가시는 걸 추천드려요!", false, "질병"));
-        //commentItemArrayList.add(new commentItem("윤경", "저희 강아지도 바닥에 자꾸 엉덩이 끌고 다니길래 왜 그런가 했더니 항문에 문제가 있어서 그렇다네요...", false, "항문낭염"));
-
         commentAdapter = new CommentAdapter(PostActivity.this, commentItemArrayList);
 
         commentListView.setAdapter(commentAdapter);
+
+        commentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                //Log.d(TAG, commentItemArrayList.get(i).getName());
+                if(author.equals(String.valueOf(LoginActivity.currentUserID))) { //본인의 게시글인 경우
+                    //Log.d(TAG, "author is "+author);
+                    Log.d(TAG, "adopted is "+commentItemArrayList.get(i).isAdopted());
+                    if(commentItemArrayList.get(i).isAdopted()) { //채택 받은 경우
+                        commentItemArrayList.get(i).setAdopted(false);
+                        Log.d(TAG, commentItemArrayList.get(i).isAdopted()+"");
+                    } else { //채택받지 못한 경우
+                        commentItemArrayList.get(i).setAdopted(true);
+                    }
+                    PostComment postComment = new PostComment(postID, commentItemArrayList.get(i).getCommentID(), commentItemArrayList.get(i).isAdopted());
+                    postComment.execute();
+                }
+            }
+        });
     }
     class GetDetailPost extends AsyncTask<Void, Void, JSONArray> {
         HttpInterface httpInterface = new HttpInterface("getPostDetails");
@@ -104,7 +124,7 @@ public class PostActivity extends Activity {
             Log.d(TAG, jsonArray.toString());
             String title;
             String content;
-            String author;
+            String author_name;
             String createdAt;
             String img_path;
             JSONArray commentJSONArray;
@@ -114,13 +134,15 @@ public class PostActivity extends Activity {
             String commentKeyword;
             boolean commentAdopted;
             String commentBody;
+            String commentID = "";
 
             try {
                 JSONObject jsonObject = jsonArray.getJSONObject(0);
                 title = jsonObject.getString("title");
                 content = jsonObject.getString("content");
-                author = jsonObject.getString("author_name");
+                author_name = jsonObject.getString("author_name");
                 createdAt = jsonObject.getString("createdAt");
+                author = jsonObject.getString("author");
 
                 if(!jsonObject.isNull("comments")) {
                     commentJSONArray = jsonObject.getJSONArray("comments");
@@ -128,14 +150,15 @@ public class PostActivity extends Activity {
 
                     for(int i = 0; i< commentJSONArray.length(); i++) {
                         commentJSONObject = commentJSONArray.getJSONObject(i);
-                        if(!commentJSONObject.isNull("name") && !commentJSONObject.isNull("body") && !commentJSONObject.isNull("adopted") && !commentJSONObject.isNull("createdAt") && !commentJSONObject.isNull("keyword")) {
+                        if(!commentJSONObject.isNull("name") && !commentJSONObject.isNull("body") && !commentJSONObject.isNull("adopted") && !commentJSONObject.isNull("createdAt") && !commentJSONObject.isNull("keyword") && !commentJSONObject.isNull("_id")) {
                             commentName = commentJSONObject.getString("name");
                             commentBody = commentJSONObject.getString("body");
                             commentAdopted = commentJSONObject.getBoolean("adopted");
                             commentDate = commentJSONObject.getString("createdAt");
                             commentKeyword = commentJSONObject.getString("keyword");
+                            commentID = commentJSONObject.getString("_id");
 
-                            commentItemArrayList.add(new commentItem(commentName, commentBody, commentAdopted, commentKeyword));
+                            commentItemArrayList.add(new commentItem(commentName, commentBody, commentAdopted, commentKeyword, commentID));
                         }
                     }
                 }
@@ -152,7 +175,7 @@ public class PostActivity extends Activity {
                 //Log.d(TAG, "title is "+title+" content is "+content+" author is "+author+" createdAt is "+createdAt+" isNull is "+jsonObject.isNull("img_path"));
                 titleTextView.setText(title);
                 bodyTextView.setText(content);
-                nameTextView.setText(author);
+                nameTextView.setText(author_name);
                 dateTextView.setText(createdAt);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -179,6 +202,63 @@ public class PostActivity extends Activity {
         protected void onPostExecute(Bitmap bitmap) {
             super.onPostExecute(bitmap);
             imageView.setImageBitmap(bitmap);
+        }
+    }
+    class PostComment extends AsyncTask<Void, Void, String> {
+        HttpInterface httpInterface;
+        String postID;
+        String commentID;
+        JSONObject jsonObject = new JSONObject();
+        boolean adopted;
+
+        String result;
+        public PostComment(String postID, String commentID, boolean adopted) {
+            httpInterface = new HttpInterface("updateComment");
+            this.postID = postID;
+            this.commentID = commentID;
+            this.adopted = adopted;
+            //Log.d(TAG, "post id is "+postID+" and commentID is "+commentID);
+            httpInterface.addToUrl(postID);
+            httpInterface.addToUrl("/"+commentID);
+            Log.d(TAG, httpInterface.getUrl());
+
+            try {
+                jsonObject.put("adopted", adopted);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        @Override
+        protected String doInBackground(Void... voids) {
+            Log.d(TAG, jsonObject.toString());
+            result = httpInterface.postJson(jsonObject);
+            Log.d(TAG, result);
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            try {
+                result  = (new JSONObject(result)).getString("result");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            if(result.equals(null)) {
+
+            } else if(result.equals("ok")) {
+                if(adopted) {
+                    Toast.makeText(getApplicationContext(), "선택하신 댓글이 채택되었습니다.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "댓글 채택이 해제되었습니다.", Toast.LENGTH_SHORT).show();
+                }
+                Intent intent = new Intent(PostActivity.this, PostActivity.class);
+                intent.putExtra("id", postID);
+                startActivity(intent);
+                finish();
+
+            }
         }
     }
 }

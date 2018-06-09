@@ -231,7 +231,6 @@ public class BoardActivity extends Activity implements AbsListView.OnScrollListe
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
         }
     }
 }

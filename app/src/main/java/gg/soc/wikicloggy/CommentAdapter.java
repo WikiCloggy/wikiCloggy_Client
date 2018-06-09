@@ -2,6 +2,8 @@ package gg.soc.wikicloggy;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.EventLogTags;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,8 @@ import java.util.ArrayList;
  */
 
 public class CommentAdapter extends BaseAdapter {
+    private static final String TAG = "CommentAdapter";
+
     Context context;
     ArrayList<commentItem> commentItemArrayList;
 
@@ -58,6 +62,9 @@ public class CommentAdapter extends BaseAdapter {
         bodyTextView.setText(commentItemArrayList.get(i).getBody());
         keywordTextView.setText(commentItemArrayList.get(i).getKeywords());
 
+        //Log.d(TAG, "is here?");
+        //Drawable drawable;
+        Log.d(TAG, commentItemArrayList.get(i).getKeywords()+" "+commentItemArrayList.get(i).isAdopted());
         if(commentItemArrayList.get(i).isAdopted()) {
             boneImageView.setImageResource(R.drawable.bone1);
         } else if(!commentItemArrayList.get(i).isAdopted()) {
