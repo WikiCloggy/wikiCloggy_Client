@@ -51,18 +51,24 @@
             android:name=".ResultActivity"
             android:theme="@android:style/Theme.Holo" />
         <activity android:name=".MapActivity" />
-        <activity android:name=".UserLogActivity"
-            android:theme="@android:style/Theme.Holo"/>
-        <activity android:name=".CreatePostActivity"
-            android:theme="@android:style/Theme.Holo"/>
-        <activity android:name=".PostLogActivity"
-            android:theme="@android:style/Theme.Holo"/>
+        <activity
+            android:name=".UserLogActivity"
+            android:theme="@android:style/Theme.Holo" />
+        <activity
+            android:name=".CreatePostActivity"
+            android:theme="@android:style/Theme.Holo" />
+        <activity
+            android:name=".PostLogActivity"
+            android:theme="@android:style/Theme.Holo" />
         <activity android:name=".PostActivity" />
         <activity android:name=".WaitingResultActivity" />
         <activity
             android:name=".ResultFailActivity"
             android:theme="@android:style/Theme.Holo" />
-        <activity android:name=".CreateCommentActivity"
+        <activity
+            android:name=".CreateCommentActivity"
+            android:theme="@android:style/Theme.Holo" />
+        <activity android:name=".SelectFaceActivity"
             android:theme="@android:style/Theme.Holo"></activity>
     </application>
 

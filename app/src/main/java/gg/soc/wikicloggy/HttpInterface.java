@@ -87,6 +87,9 @@ public class HttpInterface {
             case "updateComment":
                 apiPath = "api/board/comments/"; //+id/+comment
                 break;
+            case "selectFace":
+                apiPath = "api/log/direction/"; //+type
+                break;
         }
         requestURL = serverUrl + port + apiPath;
         Log.d("hyeon", requestURL);

@@ -96,7 +96,7 @@ public class CameraActivity extends Activity {
             @Override
             public void onClick(View view) {
                 mPreview.takePicture();
-                //startActivity(new Intent(CameraActivity.this, WaitingResultActivity.class));
+                //startActivity(new Intent(CameraActivity.this, SelectFaceActivity.class));
             }
         });
         getFromAlbumBtn.setOnClickListener(new View.OnClickListener() {
@@ -207,10 +207,19 @@ public class CameraActivity extends Activity {
                 //JSONArray jsonArray = new JSONArray(response);
                 JSONObject jsonObject = new JSONObject(response);
                 String result = jsonObject.getString("result");
+
                 if(result.equals("fail")) {
-                    intent = new Intent(CameraActivity.this, ResultFailActivity.class);
-                    intent.putExtra("userImage", realPath);
-                    startActivity(intent);
+                    String reason = jsonObject.getString("reason");
+                    if(reason.equals("head_not_found")) {
+                        intent = new Intent(CameraActivity.this, SelectFaceActivity.class);
+                        intent.putExtra("userImage", realPath);
+                        intent.putExtra("id", jsonObject.getString("_id"));
+                        startActivity(intent);
+                    } else {
+                        intent = new Intent(CameraActivity.this, ResultFailActivity.class);
+                        intent.putExtra("userImage", realPath);
+                        startActivity(intent);
+                    }
                 } else if(result.equals("success")) {
                     intent = new Intent(CameraActivity.this, ResultActivity.class);
 
@@ -241,7 +250,6 @@ public class CameraActivity extends Activity {
                     intent.putExtra("userImage", realPath);
 
                     startActivity(intent);
-
                 }
             } catch (Exception e) {
                 e.printStackTrace();
