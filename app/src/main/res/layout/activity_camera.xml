@@ -8,10 +8,11 @@
 
 
     <gg.soc.wikicloggy.AutoFitTextureView
-        android:id= "@+id/cameraAutoTextureView"
+        android:id="@+id/cameraAutoTextureView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        />
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="8dp" />
 
 
     <android.support.v4.widget.DrawerLayout
