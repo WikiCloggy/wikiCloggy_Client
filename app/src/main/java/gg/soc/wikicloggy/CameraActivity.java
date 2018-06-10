@@ -54,7 +54,7 @@ import java.io.InputStream;
 public class CameraActivity extends Activity {
 
     private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 101;
-    private TextureView mCameraTextureView;
+    private AutoFitTextureView mCameraTextureView;
     private Preview mPreview;
 
     private static final int PICK_FROM_ALBUM = 1;
@@ -82,7 +82,7 @@ public class CameraActivity extends Activity {
         setNavigationbar();
 
 
-        mCameraTextureView = (TextureView) findViewById(R.id.cameraTextureView);
+        mCameraTextureView = (AutoFitTextureView) findViewById(R.id.cameraAutoTextureView);
         mPreview = new Preview(this, mCameraTextureView);
 
         takePictureBtn = (Button) findViewById(R.id.takePictureBtn);
@@ -288,7 +288,7 @@ public class CameraActivity extends Activity {
                     int grantResult = grantResults[i];
                     if (permission.equals(Manifest.permission.CAMERA)) {
                         if(grantResult == PackageManager.PERMISSION_GRANTED) {
-                            mCameraTextureView = (TextureView) findViewById(R.id.cameraTextureView);
+                            mCameraTextureView = (AutoFitTextureView) findViewById(R.id.cameraAutoTextureView);
                             //mPreview = new Preview(cameraActivity, mCameraTextureView);
                             Log.d(TAG,"mPreview set");
                         } else {
