@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context="gg.soc.wikicloggy.NotFoundActivity">
+
+    <ImageView
+        android:id="@+id/notFountImageView"
+        android:layout_width="300dp"
+        android:layout_height="250dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="48dp"
+        android:background="@drawable/main_cloggy"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
+
+    <FrameLayout
+        android:id="@+id/notFountFrameLayout"
+        android:layout_width="300dp"
+        android:layout_height="110dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="29dp"
+        android:background="@color/mainColor"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/notFountImageView">
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="wrap_content"
+            android:textSize="25dp"
+            android:textColor="@color/black"
+            android:layout_height="wrap_content"
+            android:text="댕댕이를 찾을 수 없습니다.\n다시 촬영해주세요."
+            tools:layout_editor_absoluteX="162dp"
+            android:layout_gravity="center"
+            tools:layout_editor_absoluteY="243dp" />
+    </FrameLayout>
+
+    <Button
+        android:id="@+id/notFoundCameraBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:text="카메라"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/notFountFrameLayout" />
+
+</android.support.constraint.ConstraintLayout>

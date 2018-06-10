@@ -215,6 +215,10 @@ public class CameraActivity extends Activity {
                         intent.putExtra("userImage", realPath);
                         intent.putExtra("id", jsonObject.getString("_id"));
                         startActivity(intent);
+                    } else if(reason.equals("cloggy_not_found")) {
+                        intent = new Intent(CameraActivity.this, NotFoundActivity.class);
+                        intent.putExtra("userImage", realPath);
+                        startActivity(intent);
                     } else {
                         intent = new Intent(CameraActivity.this, ResultFailActivity.class);
                         intent.putExtra("userImage", realPath);
