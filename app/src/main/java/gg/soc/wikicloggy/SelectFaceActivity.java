@@ -14,6 +14,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,6 +34,7 @@ public class SelectFaceActivity extends Activity implements View.OnClickListener
     private String id;
 
     private FrameLayout frameLayout;
+    private ImageView waitingImageView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +47,9 @@ public class SelectFaceActivity extends Activity implements View.OnClickListener
         leftBtn = (Button) findViewById(R.id.selectFaceLeftBtn);
         rightBtn.setOnClickListener(this);
         leftBtn.setOnClickListener(this);
+        waitingImageView = (ImageView) findViewById(R.id.selectFaceWaitingImageView);
+        GlideDrawableImageViewTarget gifImage = new GlideDrawableImageViewTarget(waitingImageView);
+        Glide.with(this).load(R.drawable.running_cloggy).into(gifImage);
 
         frameLayout = (FrameLayout) findViewById(R.id.selectFaceWaitingFrameLayout);
         frameLayout.setVisibility(View.GONE);

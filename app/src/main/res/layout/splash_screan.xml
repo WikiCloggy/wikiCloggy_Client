@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:gravity="center"
     android:background="@color/mainColor"
@@ -8,15 +9,31 @@
 
     <ImageView
         android:id="@+id/running_wikicloggy"
-        android:layout_width="200dp"
-        android:layout_height="200dp" />
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="72dp" />
 
     <TextView
         android:id="@+id/logText"
-        android:layout_margin="20dp"
-        android:textSize="35dp"
-        android:gravity="center"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Lodding..." />
-</LinearLayout>
+        android:layout_margin="20dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="casual"
+        android:gravity="center"
+        android:text="Loading..."
+        android:textSize="50dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/running_wikicloggy" />
+</android.support.constraint.ConstraintLayout>
