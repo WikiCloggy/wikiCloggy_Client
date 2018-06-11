@@ -67,7 +67,7 @@
             android:layout_weight="1"
             android:background="@drawable/button_style"
             android:fontFamily="casual"
-            android:text="Write"
+            android:text="write a post"
             android:textStyle="bold" />
 
         <Button

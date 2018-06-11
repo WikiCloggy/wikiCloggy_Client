@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -39,11 +40,15 @@ public class ResultActivity extends Activity {
 
     String userImage;
 
+    private Button okBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
         Drawable drawable = getDrawable(R.drawable.main_cloggy);
+
+        okBtn = (Button) findViewById(R.id.resultOkayBtn);
 
         intent = getIntent();
         keyword = intent.getStringExtra("keyword");
@@ -84,6 +89,13 @@ public class ResultActivity extends Activity {
         getImageFromURL0.execute();
         getImageFromURL1.execute();
         getImageFromURL2.execute();
+
+        okBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     private void setCustomActionbar() {

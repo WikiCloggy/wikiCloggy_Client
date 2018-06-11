@@ -128,6 +128,13 @@ public class BoardActivity extends Activity implements AbsListView.OnScrollListe
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        startActivity(new Intent(BoardActivity.this, BoardActivity.class));
+        finish();
+    }
+
+    @Override
     public void onScroll(AbsListView absListView, int i, int i1, int i2) {
         lastItemVisibleFlag = (i2 > 0 )&&(i+i1>=i2);
     }

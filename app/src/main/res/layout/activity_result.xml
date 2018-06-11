@@ -75,9 +75,9 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:background="@drawable/border"
+        android:layout_height="wrap_content"
         android:layout_margin="15dp"
-        android:layout_height="match_parent">
+        android:background="@drawable/border">
 
         <TextView
             android:id="@+id/resultAnalysisTextView"
@@ -88,6 +88,18 @@
             android:text="Explain"
             android:textColor="@color/black"
             android:textSize="20dp" />
+
     </FrameLayout>
+
+    <Button
+        android:id="@+id/resultOkayBtn"
+        android:layout_margin="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_style"
+        android:fontFamily="casual"
+        android:text="Okay!"
+        android:textColor="@color/black"
+        android:textStyle="bold" />
 
 </LinearLayout>

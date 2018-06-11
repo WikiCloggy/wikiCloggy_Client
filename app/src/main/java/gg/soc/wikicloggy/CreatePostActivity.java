@@ -211,5 +211,4 @@ public class CreatePostActivity extends Activity {
 
         actionBar.setCustomView(actionbar);
     }
-
 }

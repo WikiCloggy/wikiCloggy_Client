@@ -204,6 +204,16 @@ public class PostActivity extends Activity {
             imageView.setImageBitmap(bitmap);
         }
     }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Intent intent = new Intent(PostActivity.this, PostActivity.class);
+        intent.putExtra("id", postID);
+        startActivity(intent);
+        finish();
+    }
+
     class PostComment extends AsyncTask<Void, Void, String> {
         HttpInterface httpInterface;
         String postID;
