@@ -52,6 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:layout_weight="1"
+            android:text="우리 댕댕이가 어제부터 엉덩이를 바닥에 끌고 다니는 행동을 반복적으로 하는데 무슨 문제가 있는 건가요?"
             tools:layout_editor_absoluteX="18dp"
             tools:layout_editor_absoluteY="0dp" />
         <View
@@ -63,7 +64,7 @@
         <ListView
             android:id="@+id/postCommentListView"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="100dp"
             android:layout_weight="1.19" />
 
     </LinearLayout>

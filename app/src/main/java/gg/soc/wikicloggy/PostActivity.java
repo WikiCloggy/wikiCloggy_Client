@@ -101,6 +101,8 @@ public class PostActivity extends Activity {
                     }
                     PostComment postComment = new PostComment(postID, commentItemArrayList.get(i).getCommentID(), commentItemArrayList.get(i).isAdopted());
                     postComment.execute();
+                } else {
+                    Toast.makeText(getApplicationContext(), "본인 게시글만 댓글을 채택할 수 있습니다.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
