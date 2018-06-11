@@ -81,7 +81,7 @@ import java.util.concurrent.TimeUnit;
 public class Preview {
     private final static String TAG = "Preview";
 
-    private String filePath = Environment.getExternalStorageDirectory().getAbsolutePath()+"/Wikicloggy/"+System.currentTimeMillis()+".jpg";
+    private String filePath;
 
     private static final SparseIntArray  ORIENTATIONS = new SparseIntArray();
 
@@ -229,6 +229,7 @@ public class Preview {
 
         @Override
         public void onImageAvailable(ImageReader reader) {
+            filePath = Environment.getExternalStorageDirectory().getAbsolutePath()+"/Wikicloggy/"+System.currentTimeMillis()+".jpg";
             mFile = new File(filePath);
             mBackgroundHandler.post(new ImageSaver(reader.acquireNextImage(), mFile));
         }
