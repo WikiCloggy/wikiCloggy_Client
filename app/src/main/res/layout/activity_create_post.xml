@@ -13,10 +13,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/mainColor"
-        android:textColor="@color/black"
+        android:fontFamily="casual"
         android:gravity="center"
-        android:text="게시글 작성하기"
-        android:textSize="30dp" />
+        android:text="Create a post"
+        android:textColor="@color/black"
+        android:textSize="30dp"
+        android:textStyle="bold" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -46,7 +48,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="사진 고르기" />
+                    android:layout_margin="10dp"
+                    android:background="@drawable/button_style"
+                    android:fontFamily="casual"
+                    android:padding="5dp"
+                    android:text="Choose a photo"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
@@ -61,11 +69,13 @@
                     android:id="@+id/textView7"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textSize="20dp"
-                    android:textColor="@color/black"
                     android:layout_margin="5dp"
-                    android:text="Title" />
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:fontFamily="casual"
+                    android:text="Title"
+                    android:textColor="@color/black"
+                    android:textSize="20dp" />
 
                 <EditText
                     android:id="@+id/createPostTitleEditText"
@@ -79,12 +89,13 @@
             <TextView
                 android:id="@+id/textView15"
                 android:layout_width="match_parent"
-                android:textColor="@color/black"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.32"
-                android:textSize="20dp"
                 android:layout_margin="5dp"
-                android:text="설명" />
+                android:layout_weight="0.32"
+                android:fontFamily="casual"
+                android:text="Explain"
+                android:textColor="@color/black"
+                android:textSize="20dp" />
 
             <EditText
                 android:id="@+id/createPostBodyEditText"

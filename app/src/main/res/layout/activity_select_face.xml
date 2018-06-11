@@ -42,9 +42,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="정확한 분석을 위해서\n사진 속 댕댕이의 얼굴의 위치를\n 선택해주세요."
+            android:fontFamily="casual"
+            android:gravity="center"
+            android:layout_margin="10dp"
+            android:text="For accurate analysis,\nplease select the location of the cloggy face in the picture."
             android:textColor="@color/black"
-            android:textSize="20dp" />
+            android:textSize="20dp"
+            android:textStyle="bold" />
     </FrameLayout>
 
 
@@ -57,6 +61,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/cloggy_hand"
+        android:fontFamily="casual"
         android:text="right"
         android:textAlignment="center"
         android:textColor="@color/black"
@@ -77,6 +82,7 @@
         android:layout_marginLeft="49dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/cloggy_hand2"
+        android:fontFamily="casual"
         android:text="left"
         android:textAlignment="center"
         android:textColor="@color/black"
@@ -94,7 +100,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/mainColor"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintLeft_toLeftOf="parent"

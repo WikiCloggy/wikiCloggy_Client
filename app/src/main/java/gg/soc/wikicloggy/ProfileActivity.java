@@ -1,5 +1,6 @@
 package gg.soc.wikicloggy;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -12,6 +13,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
@@ -51,6 +53,9 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        setCustomActionbar();
+
         profileImageBtn = (Button) findViewById(R.id.profileImageBtn);
         profileImageView = (ImageView) findViewById(R.id.profileImageView);
         profileImageBtn.setOnClickListener(this);
@@ -241,6 +246,20 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
                 profileImageView.setImageBitmap(bitmap);
             }
         }
+    public void setCustomActionbar() {
+        ActionBar actionBar = getActionBar();
+
+        //for custom actionbar, set customEnabled true
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(false);
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setDisplayShowHomeEnabled(false);
+
+        LayoutInflater inflater = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
+        View actionbar = inflater.inflate(R.layout.layout_actionbar, null);
+
+        actionBar.setCustomView(actionbar);
+    }
     }
 
 
