@@ -34,12 +34,15 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.LogoutResponseCallback;
 
@@ -67,9 +70,10 @@ public class CameraActivity extends Activity {
 
     static final int REQUEST_CAMERA = 1;
 
-    Button takePictureBtn;
-    ImageButton getFromAlbumBtn;
-    FrameLayout waitingFrameLayout;
+    private Button takePictureBtn;
+    private ImageButton getFromAlbumBtn;
+    private FrameLayout waitingFrameLayout;
+    private ImageView waitingImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +85,9 @@ public class CameraActivity extends Activity {
         setCustomActionbar();
         setNavigationbar();
 
+        waitingImageView = (ImageView) findViewById(R.id.waitingImageView);
+        GlideDrawableImageViewTarget gifImage = new GlideDrawableImageViewTarget(waitingImageView);
+        Glide.with(this).load(R.drawable.running_cloggy).into(gifImage);
 
         mCameraTextureView = (AutoFitTextureView) findViewById(R.id.cameraAutoTextureView);
 
