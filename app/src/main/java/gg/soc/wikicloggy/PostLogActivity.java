@@ -78,7 +78,7 @@ public class PostLogActivity extends Activity implements AbsListView.OnScrollLis
             try {
                 jsonObject = jsonArray.getJSONObject(i);
                 date = jsonObject.getString("createdAt");
-                name = jsonObject.getString("author");
+                name = jsonObject.getString("author_name");
                 title = jsonObject.getString("title");
                 image = jsonObject.getString("img_path");
                 Log.d(TAG, "image path is "+image);
