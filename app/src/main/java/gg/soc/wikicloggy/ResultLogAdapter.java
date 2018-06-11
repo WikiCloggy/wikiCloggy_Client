@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.text.Layout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,8 @@ import java.util.ArrayList;
  */
 
 public class ResultLogAdapter extends BaseAdapter {
+    private static final String TAG = "ResultLogAdapter";
+
     Context context;
     ArrayList<ResultItem> resultItemArrayList;
 
@@ -56,13 +59,13 @@ public class ResultLogAdapter extends BaseAdapter {
             imageView = (ImageView) view.findViewById(R.id.resultLogImageView);
             keywordTextView = (TextView) view.findViewById(R.id.resultLogKeywordTextView);
         }
-
-        dateTextView.setText(resultItemArrayList.get(i).getDate());
-        //imageView.setImageBitmap(resultItemArrayList.get(i).getImage());
-        keywordTextView.setText(resultItemArrayList.get(i).getKeyword());
-        HttpInterface httpInterface = new HttpInterface();
-        GetImageFromServer getImageFromServer = new GetImageFromServer(resultItemArrayList.get(i).getImage(), imageView);
-        getImageFromServer.execute();
+        if(dateTextView.getText().toString().equals("Date")) {
+            dateTextView.setText(resultItemArrayList.get(i).getDate());
+            keywordTextView.setText(resultItemArrayList.get(i).getKeyword());
+            HttpInterface httpInterface = new HttpInterface();
+            GetImageFromServer getImageFromServer = new GetImageFromServer(resultItemArrayList.get(i).getImage(), imageView);
+            getImageFromServer.execute();
+        }
         return view;
     }
     class GetImageFromServer extends AsyncTask<Void, Void, Bitmap> {

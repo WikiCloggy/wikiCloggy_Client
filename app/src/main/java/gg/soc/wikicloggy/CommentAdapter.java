@@ -58,17 +58,17 @@ public class CommentAdapter extends BaseAdapter {
             keywordTextView = (TextView)view.findViewById(R.id.commentItemKeywordTextView);
             boneImageView = (ImageView) view.findViewById(R.id.commentItemBoneImageView);
         }
-        nameTextView.setText(commentItemArrayList.get(i).getName());
-        bodyTextView.setText(commentItemArrayList.get(i).getBody());
-        keywordTextView.setText(commentItemArrayList.get(i).getKeywords());
+        Log.d(TAG, nameTextView.getText().toString());
+        if(nameTextView.getText().toString().equals("Id")) {
+            nameTextView.setText(commentItemArrayList.get(i).getName());
+            bodyTextView.setText(commentItemArrayList.get(i).getBody());
+            keywordTextView.setText(commentItemArrayList.get(i).getKeywords());
 
-        //Log.d(TAG, "is here?");
-        //Drawable drawable;
-        Log.d(TAG, commentItemArrayList.get(i).getKeywords()+" "+commentItemArrayList.get(i).isAdopted());
-        if(commentItemArrayList.get(i).isAdopted()) {
-            boneImageView.setImageResource(R.drawable.bone1);
-        } else if(!commentItemArrayList.get(i).isAdopted()) {
-            boneImageView.setImageResource(R.drawable.bone0);
+            if(commentItemArrayList.get(i).isAdopted()) {
+                boneImageView.setImageResource(R.drawable.bone1);
+            } else if(!commentItemArrayList.get(i).isAdopted()) {
+                boneImageView.setImageResource(R.drawable.bone0);
+            }
         }
 
         return view;
