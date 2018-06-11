@@ -31,6 +31,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -46,6 +47,7 @@ import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -108,6 +110,8 @@ public class Preview {
 
     private StreamConfigurationMap map;
 
+    private FrameLayout frameLayout;
+
     // An ImageReader that handles still image capture.
     private ImageReader mImageReader;
     // Handler for running tasks in the background.
@@ -159,9 +163,10 @@ public class Preview {
 
 
 
-    public Preview(Context context, AutoFitTextureView textureView) {
+    public Preview(Context context, AutoFitTextureView textureView, FrameLayout frameLayout) {
         mContext = context;
         mTextureView = textureView;
+        this.frameLayout = frameLayout;
     }
     // CameraCaptureSession.CaptureCallback that handles events related to JPEG capture
     private CameraCaptureSession.CaptureCallback mCaptureCallback = new CameraCaptureSession.CaptureCallback() {
@@ -394,7 +399,7 @@ public class Preview {
     /*
     * Saves a JPEG Image into the specified File
     * */
-    private static class ImageSaver implements Runnable {
+    private class ImageSaver implements Runnable {
 
         // The JPEG image
         private final Image mImage;
@@ -406,6 +411,7 @@ public class Preview {
             this.mFile = mFile;
         }
 
+
         @Override
         public void run() {
             ByteBuffer buffer = mImage.getPlanes()[0].getBuffer();
@@ -415,6 +421,9 @@ public class Preview {
             try {
                 output = new FileOutputStream(mFile);
                 output.write(bytes);
+                Log.d(TAG, "save image");
+                leaveLog leaveLog = new leaveLog(filePath);
+                leaveLog.execute();
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
@@ -782,120 +791,6 @@ public class Preview {
     * */
     protected void takePicture() {
         lockFocus();
-        /*
-        if(null == mCameraDevice) {
-            Log.e(TAG, "mCameraDevice is null, return");
-            return;
-        }
-        CameraManager cameraManager = (CameraManager) mContext.getSystemService(Context.CAMERA_SERVICE);
-        try {
-            CameraCharacteristics characteristics = cameraManager.getCameraCharacteristics(mCameraDevice.getId());
-            Size[] jpegSizes = null;
-            if (characteristics != null) {
-                jpegSizes = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP).getOutputSizes(ImageFormat.JPEG);
-            }
-            int width = 640;
-            int height = 480;
-            if (jpegSizes != null && 0 < jpegSizes.length) {
-                width = jpegSizes[0].getWidth();
-                height = jpegSizes[0].getHeight();
-            }
-            Log.d(TAG, "width is "+width +" and height is "+height);
-
-            ImageReader reader = ImageReader.newInstance(width, height, ImageFormat.JPEG, 1);
-            List<Surface> outputSurfaces = new ArrayList<Surface>(2);
-            outputSurfaces.add(reader.getSurface());
-            outputSurfaces.add(new Surface(mTextureView.getSurfaceTexture()));
-
-            final CaptureRequest.Builder captureBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
-            captureBuilder.addTarget(reader.getSurface());
-            captureBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
-
-            // Orientation
-            int rotation = ((Activity)mContext).getWindowManager().getDefaultDisplay().getRotation();
-            captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation));
-
-            final String filepath = Environment.getExternalStorageDirectory().getAbsolutePath()+"/Wikicloggy/"+System.currentTimeMillis()+".jpg";
-
-            ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
-                @Override
-                public void onImageAvailable(ImageReader reader) {
-                    Image image = null;
-                    try {
-                        image = reader.acquireLatestImage();
-                        ByteBuffer buffer = image.getPlanes()[0].getBuffer();
-                        byte[] bytes = new byte[buffer.capacity()];
-                        buffer.get(bytes);
-                        save(bytes, filepath);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } finally {
-                        if (image != null) {
-                            image.close();
-                            reader.close();
-                        }
-                    }
-                }
-
-                private void save(byte[] bytes, String filePath) throws IOException {
-
-                    Log.d(TAG, "Save image");
-                    String dirPath = Environment.getExternalStorageDirectory().getAbsolutePath()+"/Wikicloggy";
-                    File directoryWikicloggy = new File(dirPath);
-                    if(!directoryWikicloggy.exists()) {
-                        directoryWikicloggy.mkdir();
-                    }
-
-                    File copyFile = new File(filePath);
-
-                    Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    BufferedOutputStream out = null;
-
-                    out = new BufferedOutputStream(new FileOutputStream(copyFile));
-                    bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
-
-                    //저장된 사진을 서버로 전송
-                    //leaveLog leaveLog = new leaveLog(filePath);
-                    //leaveLog.execute();//
-
-                }
-            };
-
-            HandlerThread thread = new HandlerThread("CameraPicture");
-            thread.start();
-            final Handler backgroudHandler = new Handler(thread.getLooper());
-            reader.setOnImageAvailableListener(readerListener, backgroudHandler);
-
-            final CameraCaptureSession.CaptureCallback captureListener = new CameraCaptureSession.CaptureCallback() {
-                @Override
-                public void onCaptureCompleted(CameraCaptureSession session,
-                                               CaptureRequest request, TotalCaptureResult result) {
-                    super.onCaptureCompleted(session, request, result);
-                    startPreview();
-                }
-
-            };
-
-            mCameraDevice.createCaptureSession(outputSurfaces, new CameraCaptureSession.StateCallback() {
-                @Override
-                public void onConfigured(CameraCaptureSession session) {
-                    try {
-                        session.capture(captureBuilder.build(), captureListener, backgroudHandler);
-                    } catch (CameraAccessException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onConfigureFailed(CameraCaptureSession session) {
-
-                }
-            }, backgroudHandler);
-
-        } catch (CameraAccessException e) {
-            e.printStackTrace();
-        }
-        */
     }
     private void startBackgroundThread() {
         mBackgroudThread = new HandlerThread("CameraBackground");
@@ -958,25 +853,40 @@ public class Preview {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            frameLayout.setVisibility(View.VISIBLE);
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            frameLayout.setVisibility(View.INVISIBLE);
         }
 
         @Override
         protected Void doInBackground(Void... params) {
             try {
                 response = postFile.postFile("logFile",realPath);
-                Log.d(TAG,  response.toString()); // here key word return ******************************************************
                 Intent intent;
+                //JSONArray jsonArray = new JSONArray(response);
                 JSONObject jsonObject = new JSONObject(response);
                 String result = jsonObject.getString("result");
+
                 if(result.equals("fail")) {
-                    intent = new Intent(mContext, ResultFailActivity.class);
-                    intent.putExtra("userImage", realPath);
-                    mContext.startActivity(intent);
+                    String reason = jsonObject.getString("reason");
+                    if(reason.equals("head_not_found")) {
+                        intent = new Intent(mContext, SelectFaceActivity.class);
+                        intent.putExtra("userImage", realPath);
+                        intent.putExtra("id", jsonObject.getString("_id"));
+                        mContext.startActivity(intent);
+                    } else if(reason.equals("cloggy_not_found")) {
+                        intent = new Intent(mContext, NotFoundActivity.class);
+                        intent.putExtra("userImage", realPath);
+                        mContext.startActivity(intent);
+                    } else {
+                        intent = new Intent(mContext, ResultFailActivity.class);
+                        intent.putExtra("userImage", realPath);
+                        mContext.startActivity(intent);
+                    }
                 } else if(result.equals("success")) {
                     intent = new Intent(mContext, ResultActivity.class);
 

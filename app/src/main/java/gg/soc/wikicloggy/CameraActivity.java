@@ -83,13 +83,14 @@ public class CameraActivity extends Activity {
 
 
         mCameraTextureView = (AutoFitTextureView) findViewById(R.id.cameraAutoTextureView);
-        mPreview = new Preview(this, mCameraTextureView);
 
         takePictureBtn = (Button) findViewById(R.id.takePictureBtn);
         getFromAlbumBtn = (ImageButton) findViewById(R.id.getFromAlbumBtn);
 
         waitingFrameLayout = (FrameLayout) findViewById(R.id.waitingFrameLayout);
         waitingFrameLayout.setVisibility(View.INVISIBLE);
+
+        mPreview = new Preview(this, mCameraTextureView, waitingFrameLayout);
 
 
         takePictureBtn.setOnClickListener(new View.OnClickListener() {
@@ -310,7 +311,7 @@ public class CameraActivity extends Activity {
     @Override
     protected  void onPause() {
         super.onPause();
-        //mPreview.onPause();
+        mPreview.onPause();
     }
 
 
