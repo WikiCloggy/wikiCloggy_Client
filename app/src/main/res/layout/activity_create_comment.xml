@@ -12,12 +12,13 @@
         android:id="@+id/textView10"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
         android:layout_weight="0.19"
-        android:textSize="25dp"
-        android:gravity="center"
         android:background="@color/mainColor"
-        android:text="댓글작성하기" />
+        android:fontFamily="casual"
+        android:gravity="center"
+        android:text="Create Comment"
+        android:textColor="@color/black"
+        android:textSize="25dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -52,16 +53,21 @@
         android:id="@+id/createCommentKeywordSpinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.19" />
+        android:layout_weight="0.19"
+        android:background="@color/white"
+        android:popupBackground="@color/gray" />
 
     <EditText
         android:id="@+id/createCommentKeywordEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0.19"
-        android:textColor="@color/black"
-        android:hint="내용을 입력해주세요."
-        android:ems="10" />
+        android:allowUndo="true"
+        android:ems="10"
+        android:fontFamily="casual"
+        android:hint="Enter contents."
+        android:selectAllOnFocus="false"
+        android:textColor="@color/black" />
 
     <View
         android:layout_width="match_parent"
@@ -73,15 +79,23 @@
         android:id="@+id/createCommentBodyEditText"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:textColor="@color/black"
         android:layout_weight="1"
         android:ems="10"
-        android:inputType="textMultiLine" />
+        android:fontFamily="casual"
+        android:hint="Enter contents."
+        android:inputType="textMultiLine"
+        android:textColor="@color/black" />
 
     <Button
         android:id="@+id/createCommentSaveBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:layout_weight="1"
-        android:text="SAVE" />
+        android:background="@drawable/button_style"
+        android:elevation="0dp"
+        android:fontFamily="casual"
+        android:text="SAVE"
+        android:textColor="@android:color/black"
+        android:textStyle="bold" />
 </LinearLayout>

@@ -1,12 +1,15 @@
 package gg.soc.wikicloggy;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -39,12 +42,14 @@ public class CreateCommentActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_comment);
+        setCustomActionbar();
 
         keywordSpinner = (Spinner) findViewById(R.id.createCommentKeywordSpinner);
-        ArrayAdapter keywordSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.targetKeyword, R.layout.spinner_item);
+        final ArrayAdapter keywordSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.targetKeyword, R.layout.spinner_item);
         keywordSpinner.setAdapter(keywordSpinnerAdapter);
 
         etcEditText = (EditText) findViewById(R.id.createCommentKeywordEditText);
+        setUseableEditText(etcEditText, false);
         bodyEditText = (EditText) findViewById(R.id.createCommentBodyEditText);
         userName = (TextView) findViewById(R.id.createCommentUserNameTextView);
         dateTextView = (TextView) findViewById(R.id.createCommentDateTextView);
@@ -60,6 +65,23 @@ public class CreateCommentActivity extends Activity {
         Intent intent = getIntent();
         postID = intent.getStringExtra("postID");
 
+        keywordSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if(keywordSpinnerAdapter.getItem(i).toString().equals("기타")) {
+                    setUseableEditText(etcEditText, true);
+                } else {
+                    setUseableEditText(etcEditText, false);
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -68,6 +90,17 @@ public class CreateCommentActivity extends Activity {
                 postCommentToServer.execute();
             }
         });
+    }
+    private void setUseableEditText(EditText etcEditText, boolean useable) {
+        etcEditText.setClickable(useable);
+        etcEditText.setEnabled(useable);
+        etcEditText.setFocusable(useable);
+        etcEditText.setFocusableInTouchMode(useable);
+        if(useable == true) {
+            etcEditText.setHintTextColor(getResources().getColor(R.color.gray));
+        } else {
+            etcEditText.setHintTextColor(getResources().getColor(R.color.white));
+        }
     }
     class PostCommentToServer extends AsyncTask<Void, Void, Void> {
         HttpInterface httpInterface;
@@ -141,5 +174,19 @@ public class CreateCommentActivity extends Activity {
                 finish();
             }
         }
+    }
+    public void setCustomActionbar() {
+        ActionBar actionBar = getActionBar();
+
+        //for custom actionbar, set customEnabled true
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(false);
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setDisplayShowHomeEnabled(false);
+
+        LayoutInflater inflater = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
+        View actionbar = inflater.inflate(R.layout.layout_actionbar, null);
+
+        actionBar.setCustomView(actionbar);
     }
 }
