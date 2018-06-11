@@ -23,7 +23,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -80,8 +79,6 @@ public class BoardActivity extends Activity implements AbsListView.OnScrollListe
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(BoardActivity.this, PostActivity.class);
-                //Log.d(TAG, "post id is "+listItemArrayList.get(i).getPostId());
-                //Log.d(TAG, "image is "+listItemArrayList.get(i).getProfile_image());
                 intent.putExtra("id", listItemArrayList.get(i).getPostId());
                 startActivity(intent);
             }
@@ -109,10 +106,7 @@ public class BoardActivity extends Activity implements AbsListView.OnScrollListe
                 } else {
                     GetSearchPost getSearchPost = new GetSearchPost(String.valueOf(searchSpinner.getSelectedItemId()));
                     getSearchPost.execute();
-                    //Toast.makeText(getApplicationContext(), "number is "+searchSpinner.getSelectedItemId(), Toast.LENGTH_SHORT).show();
                 }
-                //startActivity(new Intent(BoardActivity.this, BoardActivity.class));
-                //finish();
             }
         });
     }
@@ -120,7 +114,7 @@ public class BoardActivity extends Activity implements AbsListView.OnScrollListe
     @Override
     public void onScrollStateChanged(AbsListView absListView, int i) {
         if(i == AbsListView.OnScrollListener.SCROLL_STATE_IDLE && lastItemVisibleFlag && mLockListView == false) {
-            //progressBar.setVisibility(View.VISIBLE);
+            Log.d(TAG, "onSrollStateChanged");
             GetUserLogTask getUserLogTask = new GetUserLogTask(page);
             getUserLogTask.execute();
         }

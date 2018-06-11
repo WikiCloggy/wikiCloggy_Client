@@ -66,15 +66,17 @@ public class BoardAdapter extends BaseAdapter{
             previewImageView = (ImageView) view.findViewById(R.id.previewImageView);
         }
 
-        nameTextView.setText(listItemArrayList.get(i).getName());
-        titleTextView.setText(listItemArrayList.get(i).getTitle());
-        dateTextView.setText(listItemArrayList.get(i).getDate());
-        previewImageView.setImageResource(R.drawable.main_cloggy);
-
-        Log.d(TAG, listItemArrayList.get(i).getProfile_image());
-        GetImageFromServer getImageFromServer = new GetImageFromServer(listItemArrayList.get(i).getProfile_image(), previewImageView);
-        getImageFromServer.execute();
-
+        if(nameTextView.getText().toString().equals("name")) {
+            nameTextView.setText(listItemArrayList.get(i).getName());
+        }
+        if(titleTextView.getText().toString().equals("Title")) {
+            titleTextView.setText(listItemArrayList.get(i).getTitle());
+        }
+        if(dateTextView.getText().toString().equals("date")) {
+            dateTextView.setText(listItemArrayList.get(i).getDate());
+            GetImageFromServer getImageFromServer = new GetImageFromServer(listItemArrayList.get(i).getProfile_image(), previewImageView);
+            getImageFromServer.execute();
+        }
         return view;
     }
     class GetImageFromServer extends AsyncTask<Void, Void, Bitmap> {
