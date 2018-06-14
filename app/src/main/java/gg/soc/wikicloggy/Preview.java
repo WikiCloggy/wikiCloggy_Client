@@ -93,10 +93,10 @@ public class Preview {
     private static final int MAX_PREVIEW_HEIGHT = 1080;
 
     static {
-        ORIENTATIONS.append(Surface.ROTATION_0, 90);
-        ORIENTATIONS.append(Surface.ROTATION_90, 0);
-        ORIENTATIONS.append(Surface.ROTATION_180, 270);
-        ORIENTATIONS.append(Surface.ROTATION_270, 180);
+        ORIENTATIONS.append(Surface.ROTATION_0, 0);
+        ORIENTATIONS.append(Surface.ROTATION_90, 90);
+        ORIENTATIONS.append(Surface.ROTATION_180, 180);
+        ORIENTATIONS.append(Surface.ROTATION_270, 270);
     }
 
     private Size mPreviewSize;
@@ -866,6 +866,7 @@ public class Preview {
         protected Void doInBackground(Void... params) {
             try {
                 response = postFile.postFile("logFile",realPath);
+                Log.d(TAG, response);
                 Intent intent;
                 //JSONArray jsonArray = new JSONArray(response);
                 JSONObject jsonObject = new JSONObject(response);
@@ -882,7 +883,7 @@ public class Preview {
                         intent = new Intent(mContext, NotFoundActivity.class);
                         intent.putExtra("userImage", realPath);
                         mContext.startActivity(intent);
-                    } else {
+                    } else if (reason.equals("not_correct")){
                         intent = new Intent(mContext, ResultFailActivity.class);
                         intent.putExtra("userImage", realPath);
                         mContext.startActivity(intent);
@@ -905,10 +906,10 @@ public class Preview {
                     //if(jsonObject.get("keyword").toString() == "") {
                     //    intent = new Intent(CameraActivity.this, ResultFailActivity.class);
                     //} else {
-                    String keywordString = keywordJsonObject0.getString("keyword")+" "+keywordJsonObject0.getString("probability")
-                            +" "+keywordJsonObject1.getString("keyword")+" "+keywordJsonObject1.getString("probability")
-                            +" "+keywordJsonObject2.getString("keyword")+" "+keywordJsonObject2.getString("probability");
+                    String keywordString = "1. "+keywordJsonObject0.getString("keyword")+" 2. "+keywordJsonObject1.getString("keyword")+" 3. "+keywordJsonObject2.getString("keyword");
 
+                    Log.d(TAG, "hello");
+                    Log.d(TAG, keywordString);
                     intent.putExtra("keyword", keywordString);
                     intent.putExtra("analysis", state);
                     intent.putExtra("image0", imageJsonObject0.get("img_path").toString());

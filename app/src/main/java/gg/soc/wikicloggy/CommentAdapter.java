@@ -70,7 +70,6 @@ public class CommentAdapter extends BaseAdapter {
                 boneImageView.setImageResource(R.drawable.bone0);
             }
         }
-
         return view;
     }
 }

@@ -14,8 +14,8 @@
 
         <ImageView
             android:id="@+id/resultUserImageView"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginTop="16dp"
@@ -26,20 +26,21 @@
 
         <ImageView
             android:id="@+id/resultExampleImageView2"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
             android:layout_marginBottom="8dp"
-            android:layout_marginLeft="29dp"
+            android:layout_marginLeft="38dp"
             android:layout_marginTop="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/resultUserImageView"
-            app:srcCompat="@drawable/album1_cloggy" />
+            app:srcCompat="@drawable/album1_cloggy"
+            app:layout_constraintVertical_bias="0.0" />
 
         <ImageView
             android:id="@+id/resultExampleImageView3"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
             android:layout_marginBottom="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
@@ -53,9 +54,9 @@
 
         <ImageView
             android:id="@+id/resultExampleImageView1"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_marginRight="26dp"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:layout_marginRight="48dp"
             android:layout_marginTop="16dp"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -66,24 +67,24 @@
         android:id="@+id/resultKeywordTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_margin="10dp"
         android:fontFamily="casual"
         android:text="Keyword"
         android:textColor="@color/black"
-        android:textSize="20dp"
+        android:textSize="15dp"
         android:textStyle="bold" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="15dp"
+        android:layout_margin="10dp"
         android:background="@drawable/border">
 
         <TextView
             android:id="@+id/resultAnalysisTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
+            android:layout_margin="10dp"
             android:fontFamily="casual"
             android:text="Explain"
             android:textColor="@color/black"

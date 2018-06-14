@@ -227,7 +227,7 @@ public class CameraActivity extends Activity {
                         intent = new Intent(CameraActivity.this, NotFoundActivity.class);
                         intent.putExtra("userImage", realPath);
                         startActivity(intent);
-                    } else {
+                    } else if(reason.equals("not_correct")){
                         intent = new Intent(CameraActivity.this, ResultFailActivity.class);
                         intent.putExtra("userImage", realPath);
                         startActivity(intent);
@@ -250,9 +250,9 @@ public class CameraActivity extends Activity {
                     //if(jsonObject.get("keyword").toString() == "") {
                     //    intent = new Intent(CameraActivity.this, ResultFailActivity.class);
                     //} else {
-                    String keywordString = keywordJsonObject0.getString("keyword")+" "+keywordJsonObject0.getString("probability")
-                            +" "+keywordJsonObject1.getString("keyword")+" "+keywordJsonObject1.getString("probability")
-                            +" "+keywordJsonObject2.getString("keyword")+" "+keywordJsonObject2.getString("probability");
+                    String keywordString = "1. "+keywordJsonObject0.getString("keyword")
+                            +" 2. "+keywordJsonObject1.getString("keyword")
+                            +" 3. "+keywordJsonObject2.getString("keyword");
 
                     intent.putExtra("keyword", keywordString);
                     intent.putExtra("analysis", state);
