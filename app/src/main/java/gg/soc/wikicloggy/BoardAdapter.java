@@ -65,7 +65,13 @@ public class BoardAdapter extends BaseAdapter{
             dateTextView = (TextView) view.findViewById(R.id.dateTextView);
             previewImageView = (ImageView) view.findViewById(R.id.previewImageView);
         }
-
+        nameTextView.setText(listItemArrayList.get(i).getName());
+        titleTextView.setText(listItemArrayList.get(i).getTitle());
+        dateTextView.setText(listItemArrayList.get(i).getDate());
+        GetImageFromServer getImageFromServer = new GetImageFromServer(listItemArrayList.get(i).getProfile_image(), previewImageView);
+        getImageFromServer.execute();
+        Log.d(TAG, listItemArrayList.get(i).getTitle());
+        /*
         if(nameTextView.getText().toString().equals("name")) {
             nameTextView.setText(listItemArrayList.get(i).getName());
         }
@@ -77,6 +83,7 @@ public class BoardAdapter extends BaseAdapter{
             GetImageFromServer getImageFromServer = new GetImageFromServer(listItemArrayList.get(i).getProfile_image(), previewImageView);
             getImageFromServer.execute();
         }
+        */
         return view;
     }
     class GetImageFromServer extends AsyncTask<Void, Void, Bitmap> {
@@ -98,8 +105,10 @@ public class BoardAdapter extends BaseAdapter{
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             super.onPostExecute(bitmap);
-            Log.d(TAG, "bitmap is "+bitmap);
+            //Log.d(TAG, "bitmap is "+bitmap);
+            imageView.setImageBitmap(null);
             imageView.setImageBitmap(bitmap);
+            Log.d(TAG, "hello");
         }
     }
 }

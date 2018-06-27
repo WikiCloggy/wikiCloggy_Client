@@ -109,16 +109,17 @@ public class BoardActivity extends Activity implements AbsListView.OnScrollListe
                 }
             }
         });
+
+
+        Log.d(TAG, listItemArrayList.toString());
     }
 
     @Override
     public void onScrollStateChanged(AbsListView absListView, int i) {
         if(i == AbsListView.OnScrollListener.SCROLL_STATE_IDLE && lastItemVisibleFlag && mLockListView == false) {
-            Log.d(TAG, "onSrollStateChanged");
             GetUserLogTask getUserLogTask = new GetUserLogTask(page);
             getUserLogTask.execute();
         }
-
     }
 
     @Override
@@ -151,12 +152,13 @@ public class BoardActivity extends Activity implements AbsListView.OnScrollListe
         protected void onPostExecute(JSONArray jsonArray) {
             super.onPostExecute(jsonArray);
             Log.d(TAG, jsonArray.toString());
-            getItem(jsonArray);
+            if(!jsonArray.isNull(0)) {
+                getItem(jsonArray);
+            }
         }
     }
     private void getItem(JSONArray jsonArray) {
-        Log.d(TAG, "page is "+page);
-        Log.d(TAG, "json array is "+jsonArray.toString());
+        Log.d(TAG, "getItem");
         mLockListView = true;
         JSONObject jsonObject;
         String title = null;
@@ -164,6 +166,9 @@ public class BoardActivity extends Activity implements AbsListView.OnScrollListe
         String author = null;
         String image = null;
         String postId = null;
+        if(jsonArray.equals(null)) {
+            return;
+        }
         for(int i=0; i< jsonArray.length(); i++) {
             try {
                 jsonObject = jsonArray.getJSONObject(i);
@@ -185,7 +190,6 @@ public class BoardActivity extends Activity implements AbsListView.OnScrollListe
             public void run() {
                 page++;
                 boardAdapter.notifyDataSetChanged();
-                //progressBar.setVisibility(View.GONE);
                 mLockListView = false;
             }
         }, 1000);
